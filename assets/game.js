@@ -22,88 +22,82 @@ function centerCanvas() {
   canvas.position(x, y);
 }
 
-
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
   background(0, 0, 0);
   textFont('Arial Black');
   textSize(24);
-  
+
   dogX = 20;
   dogY = height / 2 - 40;
-  
+
   speedIncreaseTimer = millis();
 
-  // Correct carHeight to 0.2 * height
-  const carHeight = height * 0.2;
+  const carHeight = height * 0.07;
   const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
-  
+
   for (let i = 0; i < lanesCount; i++) {
     const laneX = (0.1 + i * 0.13) * width;
     const goingDown = i % 2 === 0;
-    const laneCars = [];
-  
     let baseSpeed = 2;
     if ([1, 2, 4, 5].includes(i)) {
       baseSpeed *= 1.3;
     }
     baseSpeed *= goingDown ? 1 : -1;
-  
+
+    let carsInLane = [];
     let currentY = goingDown ? -random(carHeight * 3, carHeight * 8) : height + random(carHeight * 3, carHeight * 8);
     let maxCars = 20;
-  
+
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
-      laneCars.push({
+      carsInLane.push({
         x: laneX,
         y: currentY,
         speed: baseSpeed,
         img: cars[i % cars.length],
         dir: goingDown
       });
-  
+
       const gap = random(carHeight * 3, carHeight * 8);
       currentY += goingDown ? gap : -gap;
-  
+
       if (--maxCars <= 0) break;
     }
-  
-    lanes.push(laneCars);
+
+    // Store cars and last respawn Y
+    lanes.push({
+      cars: carsInLane,
+      lastRespawnY: goingDown ? -carHeight : height
+    });
   }
 }
 
 function draw() {
   background(bg);
 
-  // Correct carHeight to 0.2 * height
-  const carHeight = height * 0.2;
+  const carHeight = height * 0.07;
   const carWidth = carHeight * (370 / 800);
 
   for (let lane of lanes) {
-    for (let car of lane) {
+    for (let car of lane.cars) {
       car.y += car.speed;
 
-      // Use the corrected carHeight for reset logic
+      // If car goes off-screen, reposition with gap
       if (car.speed > 0 && car.y > height) {
-        car.y = -carHeight;
+        const gap = random(carHeight * 3, carHeight * 8);
+        lane.lastRespawnY -= gap;
+        car.y = lane.lastRespawnY;
       }
       if (car.speed < 0 && car.y < -carHeight) {
-        car.y = height;
+        const gap = random(carHeight * 3, carHeight * 8);
+        lane.lastRespawnY += gap;
+        car.y = lane.lastRespawnY;
       }
 
-      push(); 
+      push();
       if (car.dir) {
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
         rotate(PI);
-        imageMode(CENTER);
-        image(car.img, 0, 0, carWidth, carHeight);
-      } else {
-        imageMode(CORNER);
-        image(car.img, car.x, car.y, carWidth, carHeight);
-      }
-      pop();
-    }
-  }
-}
