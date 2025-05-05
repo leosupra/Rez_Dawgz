@@ -75,27 +75,50 @@ function setup() {
   }
 }
 
+
+
 function draw() {
+  if (gameWon) return;
+
   background(bg);
 
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
+  const dogWidth = 80;
+  const dogHeight = 80;
+  image(dog, dogX, dogY, dogWidth, dogHeight);
+
+  const houseWidth = 100;
+  const houseHeight = 100;
+  const houseX = width - houseWidth - 20;
+  const houseY = height / 2 - houseHeight / 2;
+  image(doghouse, houseX, houseY, houseWidth, houseHeight);
+
+  if (
+    dogX + dogWidth > houseX &&
+    dogY + dogHeight > houseY &&
+    dogY < houseY + houseHeight
+  ) {
+    gameWon = true;
+    console.log("You win!");
+  }
+
   for (let lane of lanes) {
-  for (let car of lane.cars) {
-    car.y += car.speed;
+    for (let car of lane.cars) {
+      car.y += car.speed;
 
-    if (car.speed > 0 && car.y > height) {
-      const minY = Math.min(...lane.cars.map(c => c.y));
-      const gap = random(carHeight, carHeight * 4);
-      car.y = minY - gap;
-    }
-    else if (car.speed < 0 && car.y < -carHeight) {
-      const maxY = Math.max(...lane.cars.map(c => c.y));
-      const gap = random(carHeight, carHeight * 4);
-      car.y = maxY + gap;
-    }
+      if (car.speed > 0 && car.y > height) {
+        const minY = Math.min(...lane.cars.map(c => c.y));
+        const gap = random(carHeight, carHeight * 4);
+        car.y = minY - gap;
+      } else if (car.speed < 0 && car.y < -carHeight) {
+        const maxY = Math.max(...lane.cars.map(c => c.y));
+        const gap = random(carHeight, carHeight * 4);
+        car.y = maxY + gap;
+      }
 
+      // Draw car
       push();
       if (car.dir) {
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
@@ -107,6 +130,26 @@ function draw() {
         image(car.img, car.x, car.y, carWidth, carHeight);
       }
       pop();
+
+      // Check collision with dog
+      if (
+        dogX < car.x + carWidth &&
+        dogX + dogWidth > car.x &&
+        dogY < car.y + carHeight &&
+        dogY + dogHeight > car.y
+      ) {
+        showGameOver();
+        noLoop(); // stop game loop
+      }
     }
   }
+}
+
+
+function showGameOver() {
+  background(0);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(height * 0.1); // scalable size
+  text("Game Over", width / 2, height / 2);
 }
