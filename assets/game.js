@@ -70,6 +70,7 @@ function draw() {
       car.y += car.speed;
 
       const carHeight = height * 0.1;
+      const carWidth = carHeight * 0.4625;
 
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight;
@@ -78,7 +79,7 @@ function draw() {
         car.y = height;
       }
 
-      image(car.img, car.x, car.y, width * 0.08, carHeight);
+      image(car.img, car.x, car.y, carWidth, carHeight);
     }
   }
 }
