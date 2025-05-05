@@ -34,7 +34,7 @@ function setup() {
 
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.2;
+  const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
@@ -77,7 +77,7 @@ function setup() {
 function draw() {
   background(bg);
 
-  const carHeight = height * 0.2;
+  const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
   for (let lane of lanes) {
