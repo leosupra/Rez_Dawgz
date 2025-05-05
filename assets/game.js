@@ -101,3 +101,13 @@ function draw() {
       if (car.dir) {
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
         rotate(PI);
+        imageMode(CENTER);
+        image(car.img, 0, 0, carWidth, carHeight);
+      } else {
+        imageMode(CORNER);
+        image(car.img, car.x, car.y, carWidth, carHeight);
+      }
+      pop();
+    }
+  }
+}
