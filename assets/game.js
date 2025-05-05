@@ -70,7 +70,7 @@ function draw() {
       car.y += car.speed;
 
       const carHeight = height * 0.2;
-      const carWidth = carHeight * (370 / 800); 
+      const carWidth = carHeight * (370 / 800); // exact ratio of your image
 
       // Wrap car vertically
       if (car.speed > 0 && car.y > height) {
@@ -80,7 +80,7 @@ function draw() {
         car.y = height;
       }
 
-      push(); 
+      push(); // Save transformation state
 
       if (car.dir) {
         // Top-down (need 180° rotation)
@@ -99,8 +99,3 @@ function draw() {
   }
 }
 
-
-      pop(); 
-    }
-  }
-}
