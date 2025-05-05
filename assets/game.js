@@ -49,7 +49,7 @@ function setup() {
     baseSpeed *= goingDown ? 1 : -1;
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight * 3, carHeight * 8) : height + random(carHeight * 3, carHeight * 8);
+    let currentY = goingDown ? -random(carHeight * 1, carHeight * 4) : height + random(carHeight * 1, carHeight * 4);
     let maxCars = 20;
 
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
@@ -61,7 +61,7 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight * 3, carHeight * 8);
+      const gap = random(carHeight * 1, carHeight * 4);
       currentY += goingDown ? gap : -gap;
 
       if (--maxCars <= 0) break;
@@ -85,12 +85,12 @@ function draw() {
       car.y += car.speed;
 
       if (car.speed > 0 && car.y > height) {
-        const gap = random(carHeight * 3, carHeight * 8);
+        const gap = random(carHeight * 1, carHeight * 4);
         lane.lastRespawnY -= gap;
         car.y = lane.lastRespawnY;
       }
       if (car.speed < 0 && car.y < -carHeight) {
-        const gap = random(carHeight * 3, carHeight * 8);
+        const gap = random(carHeight * 1, carHeight * 4);
         lane.lastRespawnY += gap;
         car.y = lane.lastRespawnY;
       }
