@@ -16,6 +16,13 @@ function preload() {
   }
 }
 
+function centerCanvas() {
+  let x = (windowWidth - width) / 2;
+  let y = (windowHeight - height) / 2;
+  canvas.position(x, y);
+}
+
+
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
