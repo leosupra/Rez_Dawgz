@@ -57,7 +57,7 @@ function setup() {
         x: laneX,
         y: currentY,
         speed: baseSpeed,
-        img: cars[i % cars.length],
+        img: random(cars),
         dir: goingDown
       });
 
