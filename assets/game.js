@@ -23,7 +23,6 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
   
-  // Initial Dog position
   dogX = 20;
   dogY = height / 2 - 40;
   
@@ -37,23 +36,32 @@ function setup() {
     const laneX = (0.1 + i * 0.13) * width;
     const goingDown = i % 2 === 0;
     const laneCars = [];
-
+  
+    let baseSpeed = random(2, 4);
+  
+    if ([1, 2, 4, 5].includes(i)) {
+      baseSpeed *= 1.1;
+    }
+  
+    baseSpeed *= goingDown ? 1 : -1;
+  
     for (let j = 0; j < carsPerLane; j++) {
       const baseY = goingDown
         ? -j * spacing
         : height + j * spacing;
-
+  
       laneCars.push({
         x: laneX,
         y: baseY,
-        speed: random(2, 4) * (goingDown ? 1 : -1),
+        speed: baseSpeed,  
         img: cars[i % cars.length],
         dir: goingDown
       });
     }
-
+  
     lanes.push(laneCars);
   }
+  
 }
 
 function centerCanvas() {
@@ -70,9 +78,8 @@ function draw() {
       car.y += car.speed;
 
       const carHeight = height * 0.2;
-      const carWidth = carHeight * (370 / 800); // exact ratio of your image
+      const carWidth = carHeight * (370 / 800); 
 
-      // Wrap car vertically
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight;
       }
@@ -80,22 +87,24 @@ function draw() {
         car.y = height;
       }
 
-      push(); // Save transformation state
+      push(); 
 
       if (car.dir) {
-        // Top-down (need 180° rotation)
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
         rotate(PI);
         imageMode(CENTER);
         image(car.img, 0, 0, carWidth, carHeight);
       } else {
-        // Bottom-up (normal)
+        
         imageMode(CORNER);
         image(car.img, car.x, car.y, carWidth, carHeight);
       }
 
-      pop(); // Restore state
+      pop();
     }
   }
 }
+
+
+
 
