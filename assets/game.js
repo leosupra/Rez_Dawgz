@@ -40,7 +40,7 @@ function setup() {
     let baseSpeed = 2;
   
     if ([1, 2, 4, 5].includes(i)) {
-      baseSpeed *= 1.5;
+      baseSpeed *= 1.3;
     }
   
     baseSpeed *= goingDown ? 1 : -1;
