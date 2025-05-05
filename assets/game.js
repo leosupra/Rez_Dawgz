@@ -81,19 +81,19 @@ function draw() {
   const carWidth = carHeight * (370 / 800);
 
   for (let lane of lanes) {
-    for (let car of lane.cars) {
-      car.y += car.speed;
+  for (let car of lane.cars) {
+    car.y += car.speed;
 
-      if (car.speed > 0 && car.y > height) {
-        const gap = random(carHeight * 1, carHeight * 4);
-        lane.lastRespawnY -= gap;
-        car.y = lane.lastRespawnY;
-      }
-      if (car.speed < 0 && car.y < -carHeight) {
-        const gap = random(carHeight * 1, carHeight * 4);
-        lane.lastRespawnY += gap;
-        car.y = lane.lastRespawnY;
-      }
+    if (car.speed > 0 && car.y > height) {
+      const minY = Math.min(...lane.cars.map(c => c.y));
+      const gap = random(carHeight, carHeight * 4);
+      car.y = minY - gap;
+    }
+    else if (car.speed < 0 && car.y < -carHeight) {
+      const maxY = Math.max(...lane.cars.map(c => c.y));
+      const gap = random(carHeight, carHeight * 4);
+      car.y = maxY + gap;
+    }
 
       push();
       if (car.dir) {
