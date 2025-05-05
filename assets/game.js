@@ -5,6 +5,7 @@ let dogX, dogY;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
+let lanePercents = [ 0.10, 0.23, 0.36, 0.49, 0.62, 0.75 ];
 
 function preload() {
   dog = loadImage('assets/rez.png');
@@ -40,7 +41,7 @@ function setup() {
   lanes = [];
 
   for (let i = 0; i < lanesCount; i++) {
-    const laneX = (0.1 + i * 0.13) * width;
+    const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
     let baseSpeed = 2;
     if ([1, 2, 4, 5].includes(i)) {
