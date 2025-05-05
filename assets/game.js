@@ -40,13 +40,17 @@ function setup() {
   
     let baseSpeed = 2;
     if ([1, 2, 4, 5].includes(i)) {
-      baseSpeed *= 1.3;
+      baseSpeed *= 1.5;
     }
     baseSpeed *= goingDown ? 1 : -1;
   
+    // Initial spawn Y position with a random gap
     let currentY = goingDown ? -random(carHeight * 3, carHeight * 8) : height + random(carHeight * 3, carHeight * 8);
     let maxCars = 20; // Prevent infinite loop just in case
-  
+
+    // Track the last Y position to ensure proper spacing
+    let lastY = currentY;
+
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
       laneCars.push({
         x: laneX,
@@ -55,17 +59,24 @@ function setup() {
         img: cars[i % cars.length],
         dir: goingDown
       });
-  
+
+      // Random gap between cars
       const gap = random(carHeight * 3, carHeight * 8);
       currentY += goingDown ? gap : -gap;
-  
+
+      // Ensure the next car doesn't overlap with the previous car
+      if (abs(currentY - lastY) < carHeight * 1.5) {
+        currentY = lastY + (goingDown ? carHeight * 1.5 : -carHeight * 1.5); // Prevent overlap
+      }
+
+      lastY = currentY;
+
       if (--maxCars <= 0) break; // failsafe
     }
   
     lanes.push(laneCars);
-  }}
-  
-
+  }
+}
 
 function centerCanvas() {
   let x = (windowWidth - width) / 2;
@@ -98,7 +109,6 @@ function draw() {
         imageMode(CENTER);
         image(car.img, 0, 0, carWidth, carHeight);
       } else {
-        
         imageMode(CORNER);
         image(car.img, car.x, car.y, carWidth, carHeight);
       }
@@ -107,6 +117,3 @@ function draw() {
     }
   }
 }
-
-
-
