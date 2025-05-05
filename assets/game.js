@@ -70,9 +70,9 @@ function draw() {
       car.y += car.speed;
 
       const carHeight = height * 0.2;
-      const carWidth = carHeight * 0.4625;
+      const carWidth = carHeight * (370 / 800); 
 
-
+      // Wrap car vertically
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight;
       }
@@ -83,15 +83,22 @@ function draw() {
       push(); 
 
       if (car.dir) {
-        
+        // Top-down (need 180° rotation)
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
-        rotate(PI); 
+        rotate(PI);
         imageMode(CENTER);
-        image(car.img, 0, 0, carHeight, carWidth); 
+        image(car.img, 0, 0, carWidth, carHeight);
       } else {
-        
+        // Bottom-up (normal)
+        imageMode(CORNER);
         image(car.img, car.x, car.y, carWidth, carHeight);
       }
+
+      pop(); // Restore state
+    }
+  }
+}
+
 
       pop(); 
     }
