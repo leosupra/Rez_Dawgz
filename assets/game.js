@@ -28,12 +28,8 @@ function setup() {
   
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.1;
+  const carHeight = height * 0.07;
   const carWidth = carHeight * (370 / 800);
-  
-  // Define spacing as a function of car height
-  const spacing = carHeight * 2.5;
-
   const lanesCount = 6;
   lanes = [];
 
@@ -41,21 +37,25 @@ function setup() {
     const laneX = (0.1 + i * 0.13) * width;
     const goingDown = i % 2 === 0;
     const laneCars = [];
-
+  
+    // Fixed speed per lane
     let baseSpeed = 2;
     if ([1, 2, 4, 5].includes(i)) {
       baseSpeed *= 1.3;
     }
     baseSpeed *= goingDown ? 1 : -1;
-
-    // Number of cars depends on total height and spacing
+  
+    // 🎯 Random spacing PER lane (between 3x and 8x car height)
+    const spacing = random(carHeight * 3, carHeight * 8);
+  
+    // Dynamically calculate how many cars to fill the screen
     const carsPerLane = ceil(height / spacing);
-
+  
     for (let j = 0; j < carsPerLane; j++) {
       const baseY = goingDown
         ? -j * spacing
         : height + j * spacing;
-
+  
       laneCars.push({
         x: laneX,
         y: baseY,
@@ -64,7 +64,7 @@ function setup() {
         dir: goingDown
       });
     }
-
+  
     lanes.push(laneCars);
   }
 }
@@ -110,3 +110,7 @@ function draw() {
     }
   }
 }
+
+
+
+
