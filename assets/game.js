@@ -42,7 +42,7 @@ function setup() {
   for (let i = 0; i < lanesCount; i++) {
     const laneX = (0.1 + i * 0.13) * width;
     const goingDown = i % 2 === 0;
-    let baseSpeed = 20;
+    let baseSpeed = 2;
     if ([1, 2, 4, 5].includes(i)) {
       baseSpeed *= 1.3;
     }
