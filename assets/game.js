@@ -37,10 +37,10 @@ function setup() {
     const goingDown = i % 2 === 0;
     const laneCars = [];
   
-    let baseSpeed = random(2, 4);
+    let baseSpeed = 2;
   
     if ([1, 2, 4, 5].includes(i)) {
-      baseSpeed *= 1.1;
+      baseSpeed *= 1.5;
     }
   
     baseSpeed *= goingDown ? 1 : -1;
