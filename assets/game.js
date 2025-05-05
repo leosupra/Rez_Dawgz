@@ -63,7 +63,7 @@ function setup() {
     }
   
     lanes.push(laneCars);
-  }
+  }}
   
 
 
