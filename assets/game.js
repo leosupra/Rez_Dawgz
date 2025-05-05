@@ -69,7 +69,7 @@ function draw() {
     for (let car of lane) {
       car.y += car.speed;
 
-      const carHeight = height * 0.1;
+      const carHeight = height * 0.2;
       const carWidth = carHeight * 0.4625;
 
       if (car.speed > 0 && car.y > height) {
