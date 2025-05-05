@@ -72,6 +72,7 @@ function draw() {
       const carHeight = height * 0.2;
       const carWidth = carHeight * 0.4625;
 
+
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight;
       }
@@ -79,7 +80,20 @@ function draw() {
         car.y = height;
       }
 
-      image(car.img, car.x, car.y, carWidth, carHeight);
+      push(); 
+
+      if (car.dir) {
+        
+        translate(car.x + carWidth / 2, car.y + carHeight / 2);
+        rotate(HALF_PI); 
+        imageMode(CENTER);
+        image(car.img, 0, 0, carHeight, carWidth); 
+      } else {
+        
+        image(car.img, car.x, car.y, carWidth, carHeight);
+      }
+
+      pop(); 
     }
   }
 }
