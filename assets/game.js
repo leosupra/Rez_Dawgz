@@ -5,7 +5,7 @@ let dogX, dogY;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
-let lanePercents = [ 0.137, 0.327, 0.416, 0.57, 0.737, 0.825 ];
+let lanePercents = [ 0.137, 0.327, 0.416, 0.578, 0.737, 0.825 ];
 
 function preload() {
   dog = loadImage('assets/rez.png');
