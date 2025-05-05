@@ -28,41 +28,47 @@ function setup() {
   
   speedIncreaseTimer = millis();
 
-  const carsPerLane = 3;
   const carHeight = height * 0.1;
-  const spacing = carHeight * 1.8;
+  const carWidth = carHeight * (370 / 800);
+  
+  // Define spacing as a function of car height
+  const spacing = carHeight * 2.5;
 
-  for (let i = 0; i < 6; i++) {
+  const lanesCount = 6;
+  lanes = [];
+
+  for (let i = 0; i < lanesCount; i++) {
     const laneX = (0.1 + i * 0.13) * width;
     const goingDown = i % 2 === 0;
     const laneCars = [];
-  
+
     let baseSpeed = 2;
-  
     if ([1, 2, 4, 5].includes(i)) {
       baseSpeed *= 1.3;
     }
-  
     baseSpeed *= goingDown ? 1 : -1;
-  
+
+    // Number of cars depends on total height and spacing
+    const carsPerLane = ceil(height / spacing);
+
     for (let j = 0; j < carsPerLane; j++) {
       const baseY = goingDown
         ? -j * spacing
         : height + j * spacing;
-  
+
       laneCars.push({
         x: laneX,
         y: baseY,
-        speed: baseSpeed,  
+        speed: baseSpeed,
         img: cars[i % cars.length],
         dir: goingDown
       });
     }
-  
+
     lanes.push(laneCars);
   }
-  
 }
+
 
 function centerCanvas() {
   let x = (windowWidth - width) / 2;
@@ -104,7 +110,3 @@ function draw() {
     }
   }
 }
-
-
-
-
