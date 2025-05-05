@@ -34,7 +34,7 @@ function setup() {
 
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.07;
+  const carHeight = height * 0.1;
   const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
@@ -67,7 +67,6 @@ function setup() {
       if (--maxCars <= 0) break;
     }
 
-    // Store cars and last respawn Y
     lanes.push({
       cars: carsInLane,
       lastRespawnY: goingDown ? -carHeight : height
@@ -78,14 +77,13 @@ function setup() {
 function draw() {
   background(bg);
 
-  const carHeight = height * 0.07;
+  const carHeight = height * 0.1;
   const carWidth = carHeight * (370 / 800);
 
   for (let lane of lanes) {
     for (let car of lane.cars) {
       car.y += car.speed;
 
-      // If car goes off-screen, reposition with gap
       if (car.speed > 0 && car.y > height) {
         const gap = random(carHeight * 3, carHeight * 8);
         lane.lastRespawnY -= gap;
