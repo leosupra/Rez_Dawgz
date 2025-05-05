@@ -85,7 +85,7 @@ function draw() {
       if (car.dir) {
         
         translate(car.x + carWidth / 2, car.y + carHeight / 2);
-        rotate(HALF_PI); 
+        rotate(PI); 
         imageMode(CENTER);
         image(car.img, 0, 0, carHeight, carWidth); 
       } else {
