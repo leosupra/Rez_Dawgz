@@ -1,14 +1,12 @@
 let dog, doghouse, bg;
 let cars = [];
 let gameWon = false;
-let gameOver = false;
 let dogX, dogY;
+let dogSize, dogSpeed = 5;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
-let dogSize;
-let dogSpeed = 5;
 
 function preload() {
   dog = loadImage('assets/rez.png');
@@ -29,6 +27,7 @@ function centerCanvas() {
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
+  background(0, 0, 0);
   textFont('Arial Black');
   textSize(24);
 
@@ -47,7 +46,9 @@ function setup() {
     const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
     let baseSpeed = 2;
-    if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
+    if ([1, 2, 4, 5].includes(i)) {
+      baseSpeed *= 1.3;
+    }
     baseSpeed *= goingDown ? 1 : -1;
 
     let carsInLane = [];
@@ -77,24 +78,26 @@ function setup() {
 }
 
 function draw() {
-  if (gameOver || gameWon) return;
+  if (gameOver) {
+    showGameOver(); // Keep drawing the black screen
+    return;
+  }
+
+  if (gameWon) return;
 
   background(bg);
 
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
-  // Dog
   image(dog, dogX, dogY, dogSize, dogSize);
 
-  // Doghouse
   const houseWidth = dogSize * 1.2;
   const houseHeight = dogSize * 1.2;
   const houseX = width - houseWidth - 20;
   const houseY = height / 2 - houseHeight / 2;
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
-  // Check win
   if (
     dogX + dogSize > houseX &&
     dogY + dogSize > houseY &&
@@ -105,7 +108,6 @@ function draw() {
     return;
   }
 
-  // Cars
   for (let lane of lanes) {
     for (let car of lane.cars) {
       car.y += car.speed;
@@ -133,7 +135,7 @@ function draw() {
       }
       pop();
 
-      // Collision detection with padding
+      // Collision detection
       const padding = dogSize * 0.15;
       if (
         dogX + padding < car.x + carWidth - padding &&
@@ -142,8 +144,7 @@ function draw() {
         dogY + dogSize - padding > car.y + padding
       ) {
         gameOver = true;
-        showGameOver();
-        noLoop();
+        return; // Skip drawing anything else, next frame will show game over
       }
     }
   }
@@ -151,23 +152,8 @@ function draw() {
   handleInput();
 }
 
-function handleInput() {
-  if (keyIsDown(UP_ARROW) && dogY > 0) {
-    dogY -= dogSpeed;
-  }
-  if (keyIsDown(DOWN_ARROW) && dogY < height - dogSize) {
-    dogY += dogSpeed;
-  }
-  if (keyIsDown(LEFT_ARROW) && dogX > 0) {
-    dogX -= dogSpeed;
-  }
-  if (keyIsDown(RIGHT_ARROW) && dogX < width - dogSize) {
-    dogX += dogSpeed;
-  }
-}
 
 function showGameOver() {
-  clear(); // clear everything
   background(0);
   fill(255);
   textAlign(CENTER, CENTER);
