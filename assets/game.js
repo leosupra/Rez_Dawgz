@@ -98,16 +98,15 @@ function draw() {
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
-  // Modified dog animation section
+  // Animate the dog
   if (walking) {
-    walkOffset += 0.1; // Slower increment for smoother animation
+    walkOffset += 0.2;
   } else {
     walkOffset = 0;
   }
 
-  // Use phase-shifted waves for natural movement
-  let bob = sin(walkOffset * 5) * 4; // Reduced frequency
-  let scale = 1 + cos(walkOffset * 5) * 0.02; // Cosine for phase shift
+  let bob = sin(walkOffset * 10) * 4;
+  let scale = 1 + sin(walkOffset * 10) * 0.02;
 
   push();
   translate(dogX + dogSize / 2, dogY + dogSize / 2 + bob);
@@ -140,11 +139,11 @@ function draw() {
 
       if (car.speed > 0 && car.y > height) {
         const minY = Math.min(...lane.cars.map(c => c.y));
-        const gap = random(carHeight * 1, carHeight * 4);
+        const gap = random(carHeight, carHeight * 4);
         car.y = minY - gap;
       } else if (car.speed < 0 && car.y < -carHeight) {
         const maxY = Math.max(...lane.cars.map(c => c.y));
-        const gap = random(carHeight * 1, carHeight * 4);
+        const gap = random(carHeight, carHeight * 4);
         car.y = maxY + gap;
       }
 
@@ -214,3 +213,9 @@ function showWin() {
   text("You Win!", width / 2, height / 2);
   noLoop();
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();
+}
+
