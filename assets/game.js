@@ -1,11 +1,13 @@
 let dog, doghouse, bg;
 let cars = [];
 let gameWon = false;
+let gameOver = false;
 let dogX, dogY, dogSpeed;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
+let dogSize;
 
 function preload() {
   dog = loadImage('assets/rez.png');
@@ -30,9 +32,10 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
+  dogSize = 80; // Set the dog size
   dogSpeed = 5;
   dogX = 20;
-  dogY = height / 2 - 40;
+  dogY = height / 2 - dogSize / 2;
 
   speedIncreaseTimer = millis();
 
@@ -77,6 +80,10 @@ function setup() {
 }
 
 function draw() {
+  if (gameOver) {
+    showGameOver();
+    return;
+  }
   if (gameWon) {
     showWin();
     return;
@@ -87,9 +94,7 @@ function draw() {
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
-  const dogWidth = 80;
-  const dogHeight = 80;
-  image(dog, dogX, dogY, dogWidth, dogHeight);
+  image(dog, dogX, dogY, dogSize, dogSize);
 
   const houseWidth = 100;
   const houseHeight = 100;
@@ -99,11 +104,12 @@ function draw() {
 
   if (
     dogX < houseX + houseWidth &&
-    dogX + dogWidth > houseX &&
+    dogX + dogSize > houseX &&
     dogY < houseY + houseHeight &&
-    dogY + dogHeight > houseY
+    dogY + dogSize > houseY
   ) {
     gameWon = true;
+    noLoop();
   }
 
   handleInput();
@@ -134,11 +140,14 @@ function draw() {
       }
       pop();
 
+      // Shrink hitboxes slightly (use padding)
+      const padding = dogSize * 0.15;
+
       if (
-        dogX < car.x + carWidth &&
-        dogX + dogWidth > car.x &&
-        dogY < car.y + carHeight &&
-        dogY + dogHeight > car.y
+        dogX + padding < car.x + carWidth - padding &&
+        dogX + dogSize - padding > car.x + padding &&
+        dogY + padding < car.y + carHeight - padding &&
+        dogY + dogSize - padding > car.y + padding
       ) {
         showGameOver();
         noLoop();
@@ -160,6 +169,7 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("Game Over", width / 2, height / 2);
+  noLoop();
 }
 
 function showWin() {
