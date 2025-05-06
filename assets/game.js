@@ -159,6 +159,7 @@ function handleInput() {
 }
 
 function showGameOver() {
+  clear();
   fill(0);
   rect(0, 0, width, height);
   textAlign(CENTER, CENTER);
