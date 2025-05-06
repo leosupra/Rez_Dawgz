@@ -145,11 +145,25 @@ function draw() {
   }
 }
 
+function keyPressed() {
+  const step = 10;
+
+  if (keyCode === LEFT_ARROW) {
+    dogX = max(0, dogX - step);
+  } else if (keyCode === RIGHT_ARROW) {
+    dogX = min(width - 80, dogX + step); // assuming dog width = 80
+  } else if (keyCode === UP_ARROW) {
+    dogY = max(0, dogY - step);
+  } else if (keyCode === DOWN_ARROW) {
+    dogY = min(height - 80, dogY + step); // assuming dog height = 80
+  }
+}
+
 
 function showGameOver() {
   background(0);
   fill(255);
   textAlign(CENTER, CENTER);
-  textSize(height * 0.1); // scalable size
+  textSize(height * 0.1); 
   text("Game Over", width / 2, height / 2);
 }
