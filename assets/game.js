@@ -151,6 +151,7 @@ function draw() {
       ) {
         showGameOver();
         noLoop();
+        return
       }
     }
   }
