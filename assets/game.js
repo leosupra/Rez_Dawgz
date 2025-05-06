@@ -1,7 +1,5 @@
 let dog, doghouse, bg;
 let cars = [];
-let dog, doghouse, bg;
-let cars = [];
 let gameWon = false;
 let gameOver = false;
 let dogX, dogY, dogSpeed;
