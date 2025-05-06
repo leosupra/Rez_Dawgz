@@ -1,9 +1,7 @@
 let dog, doghouse, bg;
 let cars = [];
 let gameWon = false;
-let gameOver = false;
-let dogX, dogY;
-let dogSize, dogSpeed = 5;
+let dogX, dogY, dogSpeed;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
@@ -28,13 +26,13 @@ function centerCanvas() {
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
-  background(0, 0, 0);
+  background(0);
   textFont('Arial Black');
   textSize(24);
 
-  dogSize = height * 0.1;
+  dogSpeed = 5;
   dogX = 20;
-  dogY = height / 2 - dogSize / 2;
+  dogY = height / 2 - 40;
 
   speedIncreaseTimer = millis();
 
@@ -53,7 +51,7 @@ function setup() {
     baseSpeed *= goingDown ? 1 : -1;
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight, carHeight * 4) : height + random(carHeight, carHeight * 4);
+    let currentY = goingDown ? -random(carHeight * 1, carHeight * 4) : height + random(carHeight * 1, carHeight * 4);
     let maxCars = 20;
 
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
@@ -65,7 +63,7 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight, carHeight * 4);
+      const gap = random(carHeight * 1, carHeight * 4);
       currentY += goingDown ? gap : -gap;
 
       if (--maxCars <= 0) break;
@@ -78,69 +76,83 @@ function setup() {
   }
 }
 
-
 function draw() {
-  if (gameOver) {
-    showGameOver();
+  if (gameWon) {
+    showWin();
     return;
   }
 
   background(bg);
 
-  // render dog
-  image(dog, dogX, dogY, dogSize, dogSize);
+  const carHeight = height * 0.15;
+  const carWidth = carHeight * (370 / 800);
 
-  // render doghouse
-  const houseWidth = dogSize * 1.2;
-  const houseHeight = dogSize * 1.2;
+  const dogWidth = 80;
+  const dogHeight = 80;
+  image(dog, dogX, dogY, dogWidth, dogHeight);
+
+  const houseWidth = 100;
+  const houseHeight = 100;
   const houseX = width - houseWidth - 20;
   const houseY = height / 2 - houseHeight / 2;
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
-  // check for win
   if (
-    dogX + dogSize > houseX &&
-    dogY + dogSize > houseY &&
-    dogY < houseY + houseHeight
+    dogX < houseX + houseWidth &&
+    dogX + dogWidth > houseX &&
+    dogY < houseY + houseHeight &&
+    dogY + dogHeight > houseY
   ) {
     gameWon = true;
-    console.log("You win!");
-    return;
   }
 
-  // draw and update cars
+  handleInput();
+
   for (let lane of lanes) {
     for (let car of lane.cars) {
       car.y += car.speed;
 
-      const carHeight = height * 0.15;
-      const carWidth = carHeight * (370 / 800);
-
       if (car.speed > 0 && car.y > height) {
-        car.y = -random(carHeight, carHeight * 4);
+        const minY = Math.min(...lane.cars.map(c => c.y));
+        const gap = random(carHeight, carHeight * 4);
+        car.y = minY - gap;
       } else if (car.speed < 0 && car.y < -carHeight) {
-        car.y = height + random(carHeight, carHeight * 4);
+        const maxY = Math.max(...lane.cars.map(c => c.y));
+        const gap = random(carHeight, carHeight * 4);
+        car.y = maxY + gap;
       }
 
-      image(car.img, car.x, car.y, carWidth, carHeight);
+      push();
+      if (car.dir) {
+        translate(car.x + carWidth / 2, car.y + carHeight / 2);
+        rotate(PI);
+        imageMode(CENTER);
+        image(car.img, 0, 0, carWidth, carHeight);
+      } else {
+        imageMode(CORNER);
+        image(car.img, car.x, car.y, carWidth, carHeight);
+      }
+      pop();
 
-      // Collision (with buffer)
-      const buffer = 10;
       if (
-        dogX + dogSize - buffer > car.x &&
-        dogX + buffer < car.x + carWidth &&
-        dogY + dogSize - buffer > car.y &&
-        dogY + buffer < car.y + carHeight
+        dogX < car.x + carWidth &&
+        dogX + dogWidth > car.x &&
+        dogY < car.y + carHeight &&
+        dogY + dogHeight > car.y
       ) {
-        gameOver = true;
-        return;
+        showGameOver();
+        noLoop();
       }
     }
   }
-
-  handleInput();
 }
 
+function handleInput() {
+  if (keyIsDown(UP_ARROW)) dogY -= dogSpeed;
+  if (keyIsDown(DOWN_ARROW)) dogY += dogSpeed;
+  if (keyIsDown(LEFT_ARROW)) dogX -= dogSpeed;
+  if (keyIsDown(RIGHT_ARROW)) dogX += dogSpeed;
+}
 
 function showGameOver() {
   background(0);
@@ -150,3 +162,16 @@ function showGameOver() {
   text("Game Over", width / 2, height / 2);
 }
 
+function showWin() {
+  background(0);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(height * 0.1);
+  text("You Win!", width / 2, height / 2);
+  noLoop();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();
+}
