@@ -9,6 +9,10 @@ let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let dogSize;
 
+// Walking animation state
+let walkOffset = 0;
+let walking = false;
+
 function preload() {
   dog = loadImage('assets/rez.png');
   doghouse = loadImage('assets/house.png');
@@ -32,7 +36,7 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogSize = 80; // Set the dog size
+  dogSize = 80;
   dogSpeed = 5;
   dogX = 20;
   dogY = height / 2 - dogSize / 2;
@@ -94,7 +98,22 @@ function draw() {
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
-  image(dog, dogX, dogY, dogSize, dogSize);
+  // Animate the dog
+  if (walking) {
+    walkOffset += 0.2;
+  } else {
+    walkOffset = 0;
+  }
+
+  let bob = sin(walkOffset * 10) * 4;
+  let scale = 1 + sin(walkOffset * 10) * 0.02;
+
+  push();
+  translate(dogX + dogSize / 2, dogY + dogSize / 2 + bob);
+  scale(scale);
+  imageMode(CENTER);
+  image(dog, 0, 0, dogSize, dogSize);
+  pop();
 
   const houseWidth = 100;
   const houseHeight = 100;
@@ -140,7 +159,6 @@ function draw() {
       }
       pop();
 
-      // Shrink hitboxes slightly (use padding)
       const padding = dogSize * 0.15;
 
       if (
@@ -151,17 +169,31 @@ function draw() {
       ) {
         showGameOver();
         noLoop();
-        return
+        return;
       }
     }
   }
 }
 
 function handleInput() {
-  if (keyIsDown(UP_ARROW)) dogY -= dogSpeed;
-  if (keyIsDown(DOWN_ARROW)) dogY += dogSpeed;
-  if (keyIsDown(LEFT_ARROW)) dogX -= dogSpeed;
-  if (keyIsDown(RIGHT_ARROW)) dogX += dogSpeed;
+  walking = false;
+
+  if (keyIsDown(UP_ARROW)) {
+    dogY -= dogSpeed;
+    walking = true;
+  }
+  if (keyIsDown(DOWN_ARROW)) {
+    dogY += dogSpeed;
+    walking = true;
+  }
+  if (keyIsDown(LEFT_ARROW)) {
+    dogX -= dogSpeed;
+    walking = true;
+  }
+  if (keyIsDown(RIGHT_ARROW)) {
+    dogX += dogSpeed;
+    walking = true;
+  }
 }
 
 function showGameOver() {
