@@ -110,16 +110,16 @@ function draw() {
 
   background(bg);
 
-  const carHeight = height * 0.15;
+  const carHeight = height * 0.18;
   const carWidth = carHeight * (370 / 800);
 
   drawDog();
   updateAnimation();
 
-  const houseWidth = 100;
-  const houseHeight = 100;
+  const houseWidth = height * 0.15;
+  const houseHeight = houseWidth * (381/500)
   const houseX = width - houseWidth - 20;
-  const houseY = height / 2 - houseHeight / 2;
+  const houseY = random(0, height - houseHeight);
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
   if (
