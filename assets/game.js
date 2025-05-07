@@ -19,7 +19,7 @@ let dogFrames = {
 
 let frameIndex = 0;
 let frameTimer = 0;
-const frameDelay = 100;
+const frameDelay = 10;
 
 
 let currentDirection = null; // ← NEW
@@ -58,7 +58,7 @@ function setup() {
   textSize(24);
 
   dogSize = 80;
-  dogSpeed = 5;
+  dogSpeed = 2;
   dogX = 20;
   dogY = height / 2 - dogSize / 2;
 
