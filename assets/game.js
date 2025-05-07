@@ -64,7 +64,7 @@ function setup() {
 
   houseWidth = height * 0.16;
   houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.991 - houseWidth;
+  houseX = width * 0.997 - houseWidth;
   houseY = random(0, height - houseHeight);
 
   speedIncreaseTimer = millis();
