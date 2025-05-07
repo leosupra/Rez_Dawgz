@@ -1,14 +1,17 @@
 let dog, doghouse, bg;
-let houseY; houseX
 let cars = [];
+let dogX, dogY, dogWidth, dogHeight, dogSpeed;
+let houseX, houseY, houseWidth, houseHeight;
+let carWidth, carHeight;
 let gameWon = false;
 let gameOver = false;
-let dogX, dogY, dogSpeed;
 let speedIncreaseTimer;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let dogWidth, dogHeight;
+
+
 
 let dogFrames = {
   UP: [],
@@ -49,6 +52,7 @@ function centerCanvas() {
   canvas.position(x, y);
 }
 
+
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
@@ -56,22 +60,21 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogHeight = height * 0.15; 
-  dogWidth = (257 / 463) * dogHeight; 
-
+  dogHeight = height * 0.15;
+  dogWidth = (257 / 463) * dogHeight; // Maintain aspect ratio
   dogSpeed = height * 0.0033;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
-  const houseWidth = height * 0.15;
-  const houseHeight = houseWidth * (381/500)
-  houseX = width * 0.92 - houseWidth;
-  houseY = random(0, height - houseHeight);
+  houseWidth = height * 0.15;
+  houseHeight = houseWidth * (381 / 500);
+  houseX = width * 0.92 - houseWidth; // Scalable x position
+  houseY = random(0, height - houseHeight); // Random y position
 
+  carHeight = height * 0.3;
+  carWidth = carHeight * (370 / 800);
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.3;
-  const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
 
@@ -95,7 +98,7 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight* 0.2, carHeight * 2);
+      const gap = random(carHeight * 0.2, carHeight * 2);
       currentY += goingDown ? gap : -gap;
       if (--maxCars <= 0) break;
     }
@@ -109,6 +112,7 @@ function draw() {
     showGameOver();
     return;
   }
+
   if (gameWon) {
     showWin();
     return;
@@ -117,9 +121,10 @@ function draw() {
   background(bg);
   drawDog();
   updateAnimation();
-  
+
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
+  // Win detection
   if (
     dogX < houseX + houseWidth &&
     dogX + dogWidth > houseX &&
@@ -127,6 +132,7 @@ function draw() {
     dogY + dogHeight > houseY
   ) {
     gameWon = true;
+    showWin()
     noLoop();
   }
 
@@ -158,6 +164,7 @@ function draw() {
       }
       pop();
 
+      
       const padding = dogHeight * 0.05;
       if (
         dogX + padding < car.x + carWidth - padding &&
@@ -172,6 +179,7 @@ function draw() {
     }
   }
 }
+
 
 function drawDog() {
   if (!currentDirection) {
@@ -236,9 +244,4 @@ function showWin() {
   textSize(height * 0.1);
   text("You Win!", width / 2, height / 2);
   noLoop();
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  centerCanvas();
 }
