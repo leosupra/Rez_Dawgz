@@ -72,7 +72,7 @@ function setup() {
   for (let i = 0; i < lanesCount; i++) {
     const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
-    let height * 0.01;
+    let baseSpeed = height * 0.01;
     if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
 
