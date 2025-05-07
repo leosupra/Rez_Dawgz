@@ -9,6 +9,8 @@ let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let dogSize;
 
+let currentDirection = null; // ← NEW
+
 function preload() {
   dog = loadImage('assets/rez.png');
   doghouse = loadImage('assets/house.png');
@@ -32,7 +34,7 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogSize = 80; // Set the dog size
+  dogSize = 80;
   dogSpeed = 5;
   dogX = 20;
   dogY = height / 2 - dogSize / 2;
@@ -48,13 +50,11 @@ function setup() {
     const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
     let baseSpeed = 2;
-    if ([1, 2, 4, 5].includes(i)) {
-      baseSpeed *= 1.3;
-    }
+    if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight * 1, carHeight * 4) : height + random(carHeight * 1, carHeight * 4);
+    let currentY = goingDown ? -random(carHeight, carHeight * 4) : height + random(carHeight, carHeight * 4);
     let maxCars = 20;
 
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
@@ -66,16 +66,12 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight * 1, carHeight * 4);
+      const gap = random(carHeight, carHeight * 4);
       currentY += goingDown ? gap : -gap;
-
       if (--maxCars <= 0) break;
     }
 
-    lanes.push({
-      cars: carsInLane,
-      lastRespawnY: goingDown ? -carHeight : height
-    });
+    lanes.push({ cars: carsInLane, lastRespawnY: goingDown ? -carHeight : height });
   }
 }
 
@@ -140,9 +136,7 @@ function draw() {
       }
       pop();
 
-      // Shrink hitboxes slightly (use padding)
       const padding = dogSize * 0.15;
-
       if (
         dogX + padding < car.x + carWidth - padding &&
         dogX + dogSize - padding > car.x + padding &&
@@ -151,17 +145,36 @@ function draw() {
       ) {
         showGameOver();
         noLoop();
-        return
+        return;
       }
     }
   }
 }
 
+// 🧠 Handles only one locked direction
 function handleInput() {
-  if (keyIsDown(UP_ARROW)) dogY -= dogSpeed;
-  if (keyIsDown(DOWN_ARROW)) dogY += dogSpeed;
-  if (keyIsDown(LEFT_ARROW)) dogX -= dogSpeed;
-  if (keyIsDown(RIGHT_ARROW)) dogX += dogSpeed;
+  if (currentDirection === 'UP') dogY -= dogSpeed;
+  else if (currentDirection === 'DOWN') dogY += dogSpeed;
+  else if (currentDirection === 'LEFT') dogX -= dogSpeed;
+  else if (currentDirection === 'RIGHT') dogX += dogSpeed;
+}
+
+function keyPressed() {
+  if (!currentDirection) {
+    if (keyIsDown(UP_ARROW)) currentDirection = 'UP';
+    else if (keyIsDown(DOWN_ARROW)) currentDirection = 'DOWN';
+    else if (keyIsDown(LEFT_ARROW)) currentDirection = 'LEFT';
+    else if (keyIsDown(RIGHT_ARROW)) currentDirection = 'RIGHT';
+  }
+}
+
+function keyReleased() {
+  if ((keyCode === UP_ARROW && currentDirection === 'UP') ||
+      (keyCode === DOWN_ARROW && currentDirection === 'DOWN') ||
+      (keyCode === LEFT_ARROW && currentDirection === 'LEFT') ||
+      (keyCode === RIGHT_ARROW && currentDirection === 'RIGHT')) {
+    currentDirection = null;
+  }
 }
 
 function showGameOver() {
