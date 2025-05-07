@@ -22,22 +22,22 @@ let frameTimer = 0;
 const frameDelay = 10;
 
 
-let currentDirection = null; // ← NEW
+let currentDirection = null,
 
 function preload() {
 
   doghouse = loadImage('assets/house.png');
   bg = loadImage('assets/background.jpg');
 
-  dogFrames.UP[0] = loadImage('up1.png');
-  dogFrames.UP[1] = loadImage('up2.png');
-  dogFrames.DOWN[0] = loadImage('down1.png');
-  dogFrames.DOWN[1] = loadImage('down2.png');
-  dogFrames.LEFT[0] = loadImage('left1.png');
-  dogFrames.LEFT[1] = loadImage('left2.png');
-  dogFrames.RIGHT[0] = loadImage('right1.png');
-  dogFrames.RIGHT[1] = loadImage('right2.png');
-  dogFrames.STAND = loadImage('stand.png');
+  dogFrames.UP[0] = loadImage('assets/up1.png');
+  dogFrames.UP[1] = loadImage('assets/up2.png');
+  dogFrames.DOWN[0] = loadImage('assets/down1.png');
+  dogFrames.DOWN[1] = loadImage('assets/down2.png');
+  dogFrames.LEFT[0] = loadImage('assets/left1.png');
+  dogFrames.LEFT[1] = loadImage('assets/left2.png');
+  dogFrames.RIGHT[0] = loadImage('assets/right1.png');
+  dogFrames.RIGHT[1] = loadImage('assets/right2.png');
+  dogFrames.STAND = loadImage('assets/stand.png');
 
   for (let i = 1; i <= 4; i++) {
     cars.push(loadImage(`assets/car${i}.jpg`));
