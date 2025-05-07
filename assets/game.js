@@ -68,7 +68,7 @@ function setup() {
   houseX = width * 0.92 - houseWidth; // Scalable x position
   houseY = random(0, height - houseHeight); // Random y position
 
-  carHeight = height * 0.3;
+  carHeight = height * 0.2;
   carWidth = carHeight * (370 / 800);
   speedIncreaseTimer = millis();
 
@@ -141,11 +141,11 @@ function draw() {
 
       if (car.speed > 0 && car.y > height) {
         const minY = Math.min(...lane.cars.map(c => c.y));
-        const gap = random(carHeight, carHeight * 4);
+        const gap = random(carHeight * 0.2, carHeight * 2);
         car.y = minY - gap;
       } else if (car.speed < 0 && car.y < -carHeight) {
         const maxY = Math.max(...lane.cars.map(c => c.y));
-        const gap = random(carHeight, carHeight * 4);
+        const gap = random(carHeight * 0.2, carHeight * 2);
         car.y = maxY + gap;
       }
 
