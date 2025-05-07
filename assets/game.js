@@ -62,9 +62,9 @@ function setup() {
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
-  houseWidth = height * 0.15;
+  houseWidth = height * 0.2;
   houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.97 - houseWidth;
+  houseX = width * 0.99 - houseWidth;
   houseY = random(0, height - houseHeight);
 
   speedIncreaseTimer = millis();
