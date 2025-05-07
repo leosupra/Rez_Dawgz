@@ -58,13 +58,13 @@ function setup() {
   dogHeight = height * 0.15; 
   dogWidth = (257 / 463) * dogHeight; 
 
-  dogSpeed = height * 0.003;
+  dogSpeed = height * 0.004;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2; 
 
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.22;
+  const carHeight = height * 0.3;
   const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
@@ -72,7 +72,7 @@ function setup() {
   for (let i = 0; i < lanesCount; i++) {
     const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
-    let baseSpeed = height * 0.003;
+    let baseSpeed = height * 0.004;
     if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
 
