@@ -165,7 +165,7 @@ function draw() {
         dogX + dogWidth > car.x &&
         dogY < car.y + carHeight &&
         dogY + dogHeight > car.y
-      )
+      ) {
         showGameOver();
         noLoop();
         return;
