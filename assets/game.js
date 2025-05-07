@@ -19,7 +19,7 @@ let dogFrames = {
 
 let frameIndex = 0;
 let frameTimer = 0;
-const frameDelay = 10;
+const frameDelay = 5;
 
 let currentDirection = null; 
 
@@ -55,7 +55,7 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogHeight = height * 0.1; 
+  dogHeight = height * 0.15; 
   dogWidth = (257 / 463) * dogHeight; 
 
   dogSpeed = 2;
