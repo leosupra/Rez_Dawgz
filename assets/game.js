@@ -58,7 +58,7 @@ function setup() {
   dogHeight = height * 0.15; 
   dogWidth = (257 / 463) * dogHeight; 
 
-  dogSpeed = height * 0.0025;
+  dogSpeed = height * 0.003;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2; 
 
