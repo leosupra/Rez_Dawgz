@@ -1,5 +1,5 @@
 let dog, doghouse, bg;
-let houseY;
+let houseY; houseX
 let cars = [];
 let gameWon = false;
 let gameOver = false;
@@ -63,6 +63,9 @@ function setup() {
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
+  const houseWidth = height * 0.15;
+  const houseHeight = houseWidth * (381/500)
+  houseX = width * 0.92 - houseWidth;
   houseY = random(0, height - houseHeight);
 
   speedIncreaseTimer = millis();
@@ -92,7 +95,7 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight, carHeight * 4);
+      const gap = random(carHeight* 0.2, carHeight * 2);
       currentY += goingDown ? gap : -gap;
       if (--maxCars <= 0) break;
     }
@@ -112,16 +115,9 @@ function draw() {
   }
 
   background(bg);
-
-  const carHeight = height * 0.18;
-  const carWidth = carHeight * (370 / 800);
-
   drawDog();
   updateAnimation();
-
-  const houseWidth = height * 0.15;
-  const houseHeight = houseWidth * (381/500)
-  const houseX = width * 0.92 - houseWidth;
+  
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
   if (
