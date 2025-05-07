@@ -1,4 +1,5 @@
 let dog, doghouse, bg;
+let houseY;
 let cars = [];
 let gameWon = false;
 let gameOver = false;
@@ -60,7 +61,9 @@ function setup() {
 
   dogSpeed = height * 0.0033;
   dogX = 20;
-  dogY = height / 2 - dogHeight / 2; 
+  dogY = height / 2 - dogHeight / 2;
+
+  houseY = random(0, height - houseHeight);
 
   speedIncreaseTimer = millis();
 
@@ -118,8 +121,7 @@ function draw() {
 
   const houseWidth = height * 0.15;
   const houseHeight = houseWidth * (381/500)
-  const houseX = width - houseWidth - 20;
-  const houseY = random(0, height - houseHeight);
+  const houseX = width * 0.92 - houseWidth;
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
   if (
