@@ -160,11 +160,12 @@ function draw() {
       }
       pop();
 
+      const padding = dogHeight * 0.05;
       if (
-        dogX < car.x + carWidth &&
-        dogX + dogWidth > car.x &&
-        dogY < car.y + carHeight &&
-        dogY + dogHeight > car.y
+        dogX + padding < car.x + carWidth - padding &&
+        dogX + dogWidth - padding > car.x + padding &&
+        dogY + padding < car.y + carHeight - padding &&
+        dogY + dogHeight - padding > car.y + padding
       ) {
         showGameOver();
         noLoop();
