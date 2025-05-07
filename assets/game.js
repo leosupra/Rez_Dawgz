@@ -64,7 +64,7 @@ function setup() {
 
   speedIncreaseTimer = millis();
 
-  const carHeight = height * 0.18;
+  const carHeight = height * 0.22;
   const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
