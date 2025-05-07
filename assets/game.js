@@ -7,7 +7,7 @@ let speedIncreaseTimer;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
-let dogSize;
+let dogWidth, dogHeight;
 
 let dogFrames = {
   UP: [],
@@ -21,11 +21,9 @@ let frameIndex = 0;
 let frameTimer = 0;
 const frameDelay = 10;
 
-
-let currentDirection = null; // ← NEW
+let currentDirection = null; 
 
 function preload() {
-
   doghouse = loadImage('assets/house.png');
   bg = loadImage('assets/background.jpg');
 
@@ -57,10 +55,12 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogSize = 80;
+  dogHeight = height * 0.1; 
+  dogWidth = (257 / 463) * dogHeight; 
+
   dogSpeed = 2;
   dogX = 20;
-  dogY = height / 2 - dogSize / 2;
+  dogY = height / 2 - dogHeight / 2; 
 
   speedIncreaseTimer = millis();
 
@@ -114,7 +114,7 @@ function draw() {
   const carWidth = carHeight * (370 / 800);
 
   drawDog();
-  updateAnimation();;
+  updateAnimation();
 
   const houseWidth = 100;
   const houseHeight = 100;
@@ -124,9 +124,9 @@ function draw() {
 
   if (
     dogX < houseX + houseWidth &&
-    dogX + dogSize > houseX &&
+    dogX + dogWidth > houseX &&
     dogY < houseY + houseHeight &&
-    dogY + dogSize > houseY
+    dogY + dogHeight > houseY
   ) {
     gameWon = true;
     noLoop();
@@ -160,12 +160,12 @@ function draw() {
       }
       pop();
 
-      const padding = dogSize * 0.15;
+      const padding = dogHeight * 0.15;
       if (
         dogX + padding < car.x + carWidth - padding &&
-        dogX + dogSize - padding > car.x + padding &&
+        dogX + dogWidth - padding > car.x + padding &&
         dogY + padding < car.y + carHeight - padding &&
-        dogY + dogSize - padding > car.y + padding
+        dogY + dogHeight - padding > car.y + padding
       ) {
         showGameOver();
         noLoop();
@@ -177,10 +177,10 @@ function draw() {
 
 function drawDog() {
   if (!currentDirection) {
-    image(dogFrames.STAND, dogX, dogY, dogSize, dogSize);
+    image(dogFrames.STAND, dogX, dogY, dogWidth, dogHeight); 
   } else {
     let frames = dogFrames[currentDirection];
-    image(frames[frameIndex], dogX, dogY, dogSize, dogSize);
+    image(frames[frameIndex], dogX, dogY, dogWidth, dogHeight); 
   }
 }
 
@@ -197,13 +197,11 @@ function updateAnimation() {
   }
 }
 
-// 🧠 Handles only one locked direction
-
 function handleInput() {
   if (currentDirection === 'UP') dogY = max(0, dogY - dogSpeed);
-  else if (currentDirection === 'DOWN') dogY = min(height - dogSize, dogY + dogSpeed);
+  else if (currentDirection === 'DOWN') dogY = min(height - dogHeight, dogY + dogSpeed);
   else if (currentDirection === 'LEFT') dogX = max(0, dogX - dogSpeed);
-  else if (currentDirection === 'RIGHT') dogX = min(width - dogSize, dogX + dogSpeed);
+  else if (currentDirection === 'RIGHT') dogX = min(width - dogWidth, dogX + dogSpeed);
 }
 
 function keyPressed() {
