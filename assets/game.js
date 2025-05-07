@@ -22,7 +22,7 @@ let frameTimer = 0;
 const frameDelay = 10;
 
 
-let currentDirection = null,
+let currentDirection = null; // ← NEW
 
 function preload() {
 
