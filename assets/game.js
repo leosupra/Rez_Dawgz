@@ -19,7 +19,7 @@ let dogFrames = {
 
 let frameIndex = 0;
 let frameTimer = 0;
-const frameDelay = 5;
+const frameDelay = 8;
 
 let currentDirection = null; 
 
