@@ -2,7 +2,6 @@ let dog, doghouse, bg;
 let cars = [];
 let dogX, dogY, dogWidth, dogHeight, dogSpeed;
 let houseX, houseY, houseWidth, houseHeight;
-let carWidth, carHeight;
 let gameWon = false;
 let gameOver = false;
 let speedIncreaseTimer;
@@ -49,7 +48,6 @@ function centerCanvas() {
   canvas.position(x, y);
 }
 
-
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerCanvas();
@@ -57,21 +55,22 @@ function setup() {
   textFont('Arial Black');
   textSize(24);
 
-  dogHeight = height * 0.15;
-  dogWidth = (257 / 463) * dogHeight; // Maintain aspect ratio
+  dogHeight = height * 0.15; 
+  dogWidth = (257 / 463) * dogHeight; 
+
   dogSpeed = height * 0.0033;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
   houseWidth = height * 0.15;
   houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.92 - houseWidth; // Scalable x position
-  houseY = random(0, height - houseHeight); // Random y position
+  houseX = width * 0.97 - houseWidth;
+  houseY = random(0, height - houseHeight);
 
-  carHeight = height * 0.2;
-  carWidth = carHeight * (370 / 800);
   speedIncreaseTimer = millis();
 
+  const carHeight = height * 0.3;
+  const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
 
@@ -95,7 +94,7 @@ function setup() {
         dir: goingDown
       });
 
-      const gap = random(carHeight * 0.2, carHeight * 2);
+      const gap = random(carHeight, carHeight * 4);
       currentY += goingDown ? gap : -gap;
       if (--maxCars <= 0) break;
     }
@@ -104,24 +103,27 @@ function setup() {
   }
 }
 
+
 function draw() {
   if (gameOver) {
     showGameOver();
     return;
   }
-
   if (gameWon) {
     showWin();
     return;
   }
 
   background(bg);
+
+  const carHeight = height * 0.18;
+  const carWidth = carHeight * (370 / 800);
+
   drawDog();
   updateAnimation();
 
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
-  // Win detection
   if (
     dogX < houseX + houseWidth &&
     dogX + dogWidth > houseX &&
@@ -141,11 +143,11 @@ function draw() {
 
       if (car.speed > 0 && car.y > height) {
         const minY = Math.min(...lane.cars.map(c => c.y));
-        const gap = random(carHeight * 0.2, carHeight * 2);
+        const gap = random(carHeight, carHeight * 4);
         car.y = minY - gap;
       } else if (car.speed < 0 && car.y < -carHeight) {
         const maxY = Math.max(...lane.cars.map(c => c.y));
-        const gap = random(carHeight * 0.2, carHeight * 2);
+        const gap = random(carHeight, carHeight * 4);
         car.y = maxY + gap;
       }
 
@@ -161,7 +163,6 @@ function draw() {
       }
       pop();
 
-      
       const padding = dogHeight * 0.05;
       if (
         dogX + padding < car.x + carWidth - padding &&
