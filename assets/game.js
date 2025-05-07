@@ -62,9 +62,9 @@ function setup() {
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
-  houseWidth = height * 0.15;
+  houseWidth = height * 0.16;
   houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.99 - houseWidth;
+  houseX = width * 0.991 - houseWidth;
   houseY = random(0, height - houseHeight);
 
   speedIncreaseTimer = millis();
@@ -163,7 +163,7 @@ function draw() {
       }
       pop();
 
-      const padding = dogHeight * 0.05;
+      const padding = dogHeight * 0.1;
       if (
         dogX + padding < car.x + carWidth - padding &&
         dogX + dogWidth - padding > car.x + padding &&
