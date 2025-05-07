@@ -9,12 +9,35 @@ let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let dogSize;
 
+let dogFrames = {
+  UP: [],
+  DOWN: [],
+  LEFT: [],
+  RIGHT: [],
+  STAND: null
+};
+
+let frameIndex = 0;
+let frameTimer = 0;
+const frameDelay = 10;
+
+
 let currentDirection = null; // ← NEW
 
 function preload() {
-  dog = loadImage('assets/rez.png');
+
   doghouse = loadImage('assets/house.png');
   bg = loadImage('assets/background.jpg');
+
+  dogFrames.UP[0] = loadImage('up1.png');
+  dogFrames.UP[1] = loadImage('up2.png');
+  dogFrames.DOWN[0] = loadImage('down1.png');
+  dogFrames.DOWN[1] = loadImage('down2.png');
+  dogFrames.LEFT[0] = loadImage('left1.png');
+  dogFrames.LEFT[1] = loadImage('left2.png');
+  dogFrames.RIGHT[0] = loadImage('right1.png');
+  dogFrames.RIGHT[1] = loadImage('right2.png');
+  dogFrames.STAND = loadImage('stand.png');
 
   for (let i = 1; i <= 4; i++) {
     cars.push(loadImage(`assets/car${i}.jpg`));
@@ -90,7 +113,8 @@ function draw() {
   const carHeight = height * 0.15;
   const carWidth = carHeight * (370 / 800);
 
-  image(dog, dogX, dogY, dogSize, dogSize);
+  drawDog();
+  updateAnimation();;
 
   const houseWidth = 100;
   const houseHeight = 100;
@@ -151,12 +175,35 @@ function draw() {
   }
 }
 
+function drawDog() {
+  if (!currentDirection) {
+    image(dogFrames.STAND, dogX, dogY, dogSize, dogSize);
+  } else {
+    let frames = dogFrames[currentDirection];
+    image(frames[frameIndex], dogX, dogY, dogSize, dogSize);
+  }
+}
+
+function updateAnimation() {
+  if (currentDirection) {
+    frameTimer++;
+    if (frameTimer >= frameDelay) {
+      frameIndex = (frameIndex + 1) % 2;
+      frameTimer = 0;
+    }
+  } else {
+    frameIndex = 0;
+    frameTimer = 0;
+  }
+}
+
 // 🧠 Handles only one locked direction
+
 function handleInput() {
-  if (currentDirection === 'UP') dogY -= dogSpeed;
-  else if (currentDirection === 'DOWN') dogY += dogSpeed;
-  else if (currentDirection === 'LEFT') dogX -= dogSpeed;
-  else if (currentDirection === 'RIGHT') dogX += dogSpeed;
+  if (currentDirection === 'UP') dogY = max(0, dogY - dogSpeed);
+  else if (currentDirection === 'DOWN') dogY = min(height - dogSize, dogY + dogSpeed);
+  else if (currentDirection === 'LEFT') dogX = max(0, dogX - dogSpeed);
+  else if (currentDirection === 'RIGHT') dogX = min(width - dogSize, dogX + dogSpeed);
 }
 
 function keyPressed() {
