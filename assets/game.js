@@ -182,43 +182,44 @@ function keyReleased() {
 }
 
 function startLevel() {
+
   dogHeight = height * 0.15;
-  dogWidth = (257 / 463) * dogHeight;
-  dogSpeed = height * 0.0033;
-  dogX = 20;
-  dogY = height / 2 - dogHeight / 2;
+  dogWidth  = (257 / 463) * dogHeight;
+  dogSpeed  = height * 0.0033;
+  dogX      = 20;
+  dogY      = height / 2 - dogHeight / 2;
 
-  houseWidth = height * 0.16;
+  houseWidth  = height * 0.16;
   houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.997 - houseWidth;
-  houseY = random(0, height - houseHeight);
+  houseX      = width * 0.997 - houseWidth;
+  houseY      = random(0, height - houseHeight);
 
-  carHeight = height * 0.18;
-  const lanesCount = lanePercents.length;
-  lanes = [];
 
+  const lanesCount  = lanePercents.length;
   const speedFactor = Math.pow(1.1, level - 1);
+  carHeight = height * 0.18;
 
+  lanes = [];
   for (let i = 0; i < lanesCount; i++) {
-    const laneX = lanePercents[i] * width;
-    const goingDown = i % 2 === 0;
-    let baseSpeed = height * 0.003 * speedFactor;
-    if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
+    const laneX     = lanePercents[i] * width;
+    const goingDown = (i % 2 === 0);
+    let baseSpeed   = height * 0.003 * speedFactor;
+    if ([1,2,4,5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
 
     let carsInLane = [];
-    let currentY = goingDown
-      ? -random(carHeight * 2, carHeight * 4) * speedFactor
-      : height + random(carHeight * 2, carHeight * 4) * speedFactor;
+    let currentY   = goingDown
+                   ? -random(carHeight * 2, carHeight * 4) * speedFactor
+                   :  height + random(carHeight * 2, carHeight * 4) * speedFactor;
 
     for (let c = 0; c < 20; c++) {
       carsInLane.push({
-        x: laneX,
-        y: currentY,
-        speed: baseSpeed,
-        img: random(cars),
-        dir: goingDown,
-        speedFactor: speedFactor
+        x:          laneX,
+        y:          currentY,
+        speed:      baseSpeed,
+        img:        random(cars),
+        dir:        goingDown,
+        speedFactor
       });
       const gap = random(carHeight * 2, carHeight * 4) * speedFactor;
       currentY += goingDown ? gap : -gap;
@@ -228,10 +229,34 @@ function startLevel() {
     lanes.push({ cars: carsInLane, lastRespawnY: lastY });
   }
 
-  levelIntro = true;
+  const introDurationMs = 4000;
+  const fps = frameRate() > 0 ? frameRate() : 60;
+  const stepsToSimulate = Math.ceil((introDurationMs / 1000) * fps);
+
+  for (let f = 0; f < stepsToSimulate; f++) {
+    for (let lane of lanes) {
+      for (let car of lane.cars) {
+        car.y += car.speed;
+
+        if (car.speed > 0 && car.y > height) {
+          const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+          car.y = lane.lastRespawnY - gap;
+          lane.lastRespawnY = car.y;
+        } 
+        else if (car.speed < 0 && car.y < -carHeight) {
+          const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+          car.y = lane.lastRespawnY + gap;
+          lane.lastRespawnY = car.y;
+        }
+      }
+    }
+  }
+
+  levelIntro     = true;
   levelStartTime = millis();
   loop();
 }
+
 
 function drawGamePlay() {
   background(bg);
