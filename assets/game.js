@@ -9,6 +9,8 @@ let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let carHeight;
+let gameOverStartTime = 0;
+
 
 let level = 1;
 let levelIntro = true;
@@ -163,7 +165,7 @@ function drawGamePlay() {
         dogY + dogHeight - pad > car.y + pad
       ) {
         gameOver = true;
-        return;
+        gameOverStartTime = millis();
       }
     }
   }
@@ -289,14 +291,16 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("Game Over", width/2, height/2);
-  setTimeout(() => {
+
+  if (millis() - gameOverStartTime > 2000) {
     gameStarted = false;
     gameOver    = false;
     showingWin  = false;
     levelIntro  = true;
     level       = 1;
-  }, 2000);
+  }
 }
+
 
 function showWin() {
   background(0);
@@ -308,8 +312,8 @@ function showWin() {
 
 function showLevelIntro() {
   background(0, 200);
-  fill('#FFD700');
+  fill(255);
   textAlign(CENTER, CENTER);
-  textSize(height * 0.1);
+  textSize(height * 0.08);
   text(`Level ${level}`, width/2, height/2);
 }
