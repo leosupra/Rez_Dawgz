@@ -64,6 +64,7 @@ function centerCanvas() {
   canvas.position(x, y);
 }
 
+
 function draw() {
   if (!gameStarted) {
     drawStartScreen();
@@ -85,6 +86,8 @@ function draw() {
     return;
   }
 
+  drawGamePlay();
+
   if (levelIntro) {
     showLevelIntro();
     if (millis() - levelStartTime > 4000) {
@@ -92,9 +95,8 @@ function draw() {
     }
     return;
   }
-
-  drawGamePlay();
 }
+
 
 function drawStartScreen() {
   imageMode(CORNER);
