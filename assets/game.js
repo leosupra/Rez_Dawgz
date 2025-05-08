@@ -241,8 +241,6 @@ function startLevel() {
   houseX = width * 0.997 - houseWidth;
   houseY = random(0, height - houseHeight);
 
-  const carHeight = height * 0.3;
-  const carWidth = carHeight * (370 / 800);
   const lanesCount = 6;
   lanes = [];
 
