@@ -129,7 +129,7 @@ function draw() {
     fill(255);
     stroke(0);
     textSize(8);
-    text("Developed by LEO", width * 90, height * 0.98);
+    text("Developed by LEO", width * 0.9, height * 0.98);
 
     return;
   }
