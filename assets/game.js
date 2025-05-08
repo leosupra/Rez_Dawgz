@@ -126,11 +126,11 @@ function draw() {
     textSize(32);
     text("Press SPACE to Start", width / 2, height * 0.955);
 
-    fill(255);
+    fill('#C0C0C0');
     stroke(0);
-    textSize(10);
+    textSize(12);
     textAlign(RIGHT, BOTTOM);
-    text("Developed by LEO", width * 0.98, height * 0.98);
+    text("Developed by LEO", width * 0.99, height * 0.98);
 
     return;
   }
