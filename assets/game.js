@@ -112,14 +112,14 @@ function draw() {
     imageMode(CORNER); // top-left is origin
     image(startScreen, 0, 0, width, height);
 
-    fill('#FFD700');
+    fill('#C0C0C0');
     stroke(0);
     strokeWeight(4);
     textAlign(CENTER, CENTER);
     textSize(64);
     text("The Hard Way", width / 2, height * 0.1); 
 
-    fill(255);
+    fill('#FFD700');
     stroke(0);
     strokeWeight(3);
     textAlign(CENTER, CENTER);
@@ -128,8 +128,9 @@ function draw() {
 
     fill(255);
     stroke(0);
-    textSize(8);
-    text("Developed by LEO", width * 0.9, height * 0.98);
+    textSize(10);
+    textAlign(RIGHT, BOTTOM);
+    text("Developed by LEO", width * 0.98, height * 0.98);
 
     return;
   }
