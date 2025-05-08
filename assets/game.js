@@ -112,7 +112,7 @@ function draw() {
     imageMode(CORNER); // top-left is origin
     image(startScreen, 0, 0, width, height);
 
-    fill('#FF1C47');
+    fill('#D60000');
     stroke(0);
     strokeWeight(4);
     textAlign(CENTER, CENTER);
