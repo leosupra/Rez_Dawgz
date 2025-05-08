@@ -197,7 +197,7 @@ function handleInput() {
 }
 
 function keyPressed() {
-  if (key === ' ' && !gameStarted) {
+  if (keyCode === 32 && !gameStarted) {
     gameStarted = true;
     gameOver    = false;
     showingWin  = false;
@@ -214,6 +214,7 @@ function keyPressed() {
     else if (keyIsDown(RIGHT_ARROW))currentDirection = 'RIGHT';
   }
 }
+
 
 function keyReleased() {
   const code = keyCode;
