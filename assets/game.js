@@ -8,6 +8,7 @@ let gameOver = false;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
+let carHeight; 
 
 let level = 1;
 let levelIntro = true;
@@ -121,8 +122,6 @@ function drawStartScreen() {
 
 function drawGamePlay() {
   background(bg);
-
-  const carHeight = height * 0.18;
   const carWidth = carHeight * (370 / 800);
 
   drawDog();
@@ -141,10 +140,11 @@ function drawGamePlay() {
     for (let car of lane.cars) {
       car.y += car.speed;
 
+      // Reset cars with speed-scaled gaps
       if (car.speed > 0 && car.y > height) {
-        car.y = -carHeight - random(carHeight, carHeight * 3); 
+        car.y = -carHeight - random(carHeight, carHeight * 2); 
       } else if (car.speed < 0 && car.y < -carHeight) {
-        car.y = height + random(carHeight, carHeight * 3); 
+        car.y = height + random(carHeight, carHeight * 2); 
       }
 
       push();
@@ -203,15 +203,19 @@ function handleInput() {
 }
 
 function keyPressed() {
-  if (!gameStarted && key === ' ') {
-    gameStarted = true;
-    gameOver = false;
-    gameWon = false;
-    level = 1;
-    startLevel(); 
-    loop();       
-    return;
+  if (key === ' ') {
+    if (gameOver || !gameStarted) {
+      gameStarted = true;
+      gameOver = false;
+      showingWin = false;
+      level = 1;
+      lanes = [];
+      startLevel();
+      loop();
+      return;
+    }
   }
+  
   if (!currentDirection) {
     if (keyIsDown(UP_ARROW)) currentDirection = 'UP';
     else if (keyIsDown(DOWN_ARROW)) currentDirection = 'DOWN';
@@ -230,17 +234,21 @@ function keyReleased() {
 }
 
 function startLevel() {
+  
   dogHeight = height * 0.15;
   dogWidth = (257 / 463) * dogHeight;
   dogSpeed = height * 0.0033;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
+  
   houseWidth = height * 0.16;
   houseHeight = houseWidth * (381 / 500);
   houseX = width * 0.997 - houseWidth;
   houseY = random(0, height - houseHeight);
 
+  
+  carHeight = height * 0.18; 
   const lanesCount = 6;
   lanes = [];
 
@@ -250,9 +258,11 @@ function startLevel() {
     let baseSpeed = height * 0.003 * Math.pow(1.1, level - 1);
     if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
+    const speedFactor = Math.pow(1.1, level - 1);
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight, carHeight * 4) : height + random(carHeight, carHeight * 4);
+    let currentY = goingDown ? -random(carHeight * speedFactor, carHeight * 2 * speedFactor) 
+                    : height + random(carHeight * speedFactor, carHeight * 2 * speedFactor);
     let maxCars = 20;
 
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
@@ -264,7 +274,7 @@ function startLevel() {
         dir: goingDown
       });
 
-      const gap = random(carHeight, carHeight * 4);
+      const gap = random(carHeight * speedFactor, carHeight * 2 * speedFactor);
       currentY += goingDown ? gap : -gap;
       if (--maxCars <= 0) break;
     }
@@ -292,21 +302,10 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("Game Over", width / 2, height / 2);
-  setTimeout(() => {
-    resetToStartScreen();
-  }, 3000);
+  fill('#FFD700');
+  textSize(32);
+  text("Press SPACE to Restart", width / 2, height * 0.7);
 }
-
-function resetToStartScreen() {
-  gameStarted = false;
-  gameOver = false;
-  showingWin = false;
-  levelIntro = true;
-  level = 1;
-  noLoop();
-  drawStartScreen();
-}
-
 
 function showWin() {
   background(0);
