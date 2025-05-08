@@ -4,12 +4,16 @@ let dog, doghouse, bg;
 let cars = [];
 let dogX, dogY, dogWidth, dogHeight, dogSpeed;
 let houseX, houseY, houseWidth, houseHeight;
-let gameWon = false;
 let gameOver = false;
-let speedIncreaseTimer;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
+
+let level = 1;
+let levelIntro = true;
+let levelStartTime = 0;
+let showingWin = false;
+let winDisplayStart = 0;
 
 let dogFrames = {
   UP: [],
@@ -23,10 +27,10 @@ let frameIndex = 0;
 let frameTimer = 0;
 const frameDelay = 10;
 
-let currentDirection = null; 
+let currentDirection = null;
 
 function preload() {
-  startScreen = loadImage('assets/poster.jpg')
+  startScreen = loadImage('assets/poster.jpg');
   doghouse = loadImage('assets/house.png');
   bg = loadImage('assets/background.jpg');
 
@@ -45,104 +49,77 @@ function preload() {
   }
 }
 
+function setup() {
+  canvas = createCanvas(windowWidth, windowHeight);
+  centerCanvas();
+  textFont('Arial Black');
+  textSize(24);
+  noLoop();
+}
+
 function centerCanvas() {
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
   canvas.position(x, y);
 }
 
-function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
-  centerCanvas();
-  background(0);
-  textFont('Arial Black');
-  textSize(24);
-
-  dogHeight = height * 0.15; 
-  dogWidth = (257 / 463) * dogHeight; 
-
-  dogSpeed = height * 0.0033;
-  dogX = 20;
-  dogY = height / 2 - dogHeight / 2;
-
-  houseWidth = height * 0.16;
-  houseHeight = houseWidth * (381 / 500);
-  houseX = width * 0.997 - houseWidth;
-  houseY = random(0, height - houseHeight);
-
-  speedIncreaseTimer = millis();
-
-  const carHeight = height * 0.3;
-  const carWidth = carHeight * (370 / 800);
-  const lanesCount = 6;
-  lanes = [];
-
-  for (let i = 0; i < lanesCount; i++) {
-    const laneX = lanePercents[i] * width;
-    const goingDown = i % 2 === 0;
-    let baseSpeed = height * 0.003;
-    if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
-    baseSpeed *= goingDown ? 1 : -1;
-
-    let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight, carHeight * 4) : height + random(carHeight, carHeight * 4);
-    let maxCars = 20;
-
-    while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
-      carsInLane.push({
-        x: laneX,
-        y: currentY,
-        speed: baseSpeed,
-        img: random(cars),
-        dir: goingDown
-      });
-
-      const gap = random(carHeight, carHeight * 4);
-      currentY += goingDown ? gap : -gap;
-      if (--maxCars <= 0) break;
-    }
-
-    lanes.push({ cars: carsInLane, lastRespawnY: goingDown ? -carHeight : height });
-  }
-}
-
-
 function draw() {
   if (!gameStarted) {
-    imageMode(CORNER); // top-left is origin
-    image(startScreen, 0, 0, width, height);
-
-    fill('#C0C0C0');
-    stroke(0);
-    strokeWeight(4);
-    textAlign(CENTER, CENTER);
-    textSize(64);
-    text("The Hard Way", width / 2, height * 0.1); 
-
-    fill('#FFD700');
-    stroke(0);
-    strokeWeight(3);
-    textAlign(CENTER, CENTER);
-    textSize(32);
-    text("Press SPACE to Start", width / 2, height * 0.955);
-
-    fill('#C0C0C0');
-    stroke(0);
-    textSize(12);
-    textAlign(RIGHT, BOTTOM);
-    text("Developed by LEO", width * 0.99, height * 0.98);
-
+    drawStartScreen();
     return;
   }
+
   if (gameOver) {
     showGameOver();
     return;
   }
-  if (gameWon) {
+
+  if (showingWin) {
     showWin();
+    if (millis() - winDisplayStart > 3000) {
+      level++;
+      showingWin = false;
+      startLevel();
+    }
     return;
   }
 
+  if (levelIntro) {
+    showLevelIntro();
+    if (millis() - levelStartTime > 4000) {
+      levelIntro = false;
+    }
+    return;
+  }
+
+  drawGamePlay();
+}
+
+function drawStartScreen() {
+  imageMode(CORNER);
+  image(startScreen, 0, 0, width, height);
+
+  fill('#C0C0C0');
+  stroke(0);
+  strokeWeight(4);
+  textAlign(CENTER, CENTER);
+  textSize(64);
+  text("The Hard Way", width / 2, height * 0.1);
+
+  fill('#FFD700');
+  stroke(0);
+  strokeWeight(3);
+  textSize(32);
+  text("Press SPACE to Start", width / 2, height * 0.955);
+
+  fill('#C0C0C0');
+  stroke(0);
+  textSize(12);
+  textAlign(RIGHT, BOTTOM);
+  text("Developed by LEO", width * 0.99, height * 0.98);
+}
+
+function drawGamePlay() {
   background(bg);
 
   const carHeight = height * 0.18;
@@ -150,22 +127,15 @@ function draw() {
 
   drawDog();
   updateAnimation();
+  handleInput();
 
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
 
-  if (
-    dogX < houseX + houseWidth &&
-    dogX + dogWidth > houseX &&
-    dogY < houseY + houseHeight &&
-    dogY + dogHeight > houseY
-  ) {
-    gameWon = true;
-    showWin()
-    noLoop();
-    return
+  if (dogReachedHouse()) {
+    showingWin = true;
+    winDisplayStart = millis();
+    return;
   }
-
-  handleInput();
 
   for (let lane of lanes) {
     for (let car of lane.cars) {
@@ -173,12 +143,10 @@ function draw() {
 
       if (car.speed > 0 && car.y > height) {
         const minY = Math.min(...lane.cars.map(c => c.y));
-        const gap = random(carHeight, carHeight * 4);
-        car.y = minY - gap;
+        car.y = minY - random(carHeight, carHeight * 4);
       } else if (car.speed < 0 && car.y < -carHeight) {
         const maxY = Math.max(...lane.cars.map(c => c.y));
-        const gap = random(carHeight, carHeight * 4);
-        car.y = maxY + gap;
+        car.y = maxY + random(carHeight, carHeight * 4);
       }
 
       push();
@@ -200,21 +168,19 @@ function draw() {
         dogY + padding < car.y + carHeight - padding &&
         dogY + dogHeight - padding > car.y + padding
       ) {
-        showGameOver();
-        noLoop();
+        gameOver = true;
         return;
       }
     }
   }
 }
 
-
 function drawDog() {
   if (!currentDirection) {
-    image(dogFrames.STAND, dogX, dogY, dogWidth, dogHeight); 
+    image(dogFrames.STAND, dogX, dogY, dogWidth, dogHeight);
   } else {
-    let frames = dogFrames[currentDirection];
-    image(frames[frameIndex], dogX, dogY, dogWidth, dogHeight); 
+    const frames = dogFrames[currentDirection];
+    image(frames[frameIndex], dogX, dogY, dogWidth, dogHeight);
   }
 }
 
@@ -241,9 +207,11 @@ function handleInput() {
 function keyPressed() {
   if (!gameStarted && key === ' ') {
     gameStarted = true;
+    startLevel();
     loop();
     return;
   }
+
   if (!currentDirection) {
     if (keyIsDown(UP_ARROW)) currentDirection = 'UP';
     else if (keyIsDown(DOWN_ARROW)) currentDirection = 'DOWN';
@@ -261,6 +229,65 @@ function keyReleased() {
   }
 }
 
+function startLevel() {
+  dogHeight = height * 0.15;
+  dogWidth = (257 / 463) * dogHeight;
+  dogSpeed = height * 0.0033;
+  dogX = 20;
+  dogY = height / 2 - dogHeight / 2;
+
+  houseWidth = height * 0.16;
+  houseHeight = houseWidth * (381 / 500);
+  houseX = width * 0.997 - houseWidth;
+  houseY = random(0, height - houseHeight);
+
+  const carHeight = height * 0.3;
+  const carWidth = carHeight * (370 / 800);
+  const lanesCount = 6;
+  lanes = [];
+
+  for (let i = 0; i < lanesCount; i++) {
+    const laneX = lanePercents[i] * width;
+    const goingDown = i % 2 === 0;
+    let baseSpeed = height * 0.003 * Math.pow(1.1, level - 1);
+    if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
+    baseSpeed *= goingDown ? 1 : -1;
+
+    let carsInLane = [];
+    let currentY = goingDown ? -random(carHeight, carHeight * 4) : height + random(carHeight, carHeight * 4);
+    let maxCars = 20;
+
+    while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
+      carsInLane.push({
+        x: laneX,
+        y: currentY,
+        speed: baseSpeed,
+        img: random(cars),
+        dir: goingDown
+      });
+
+      const gap = random(carHeight, carHeight * 4);
+      currentY += goingDown ? gap : -gap;
+      if (--maxCars <= 0) break;
+    }
+
+    lanes.push({ cars: carsInLane });
+  }
+
+  levelIntro = true;
+  levelStartTime = millis();
+  loop();
+}
+
+function dogReachedHouse() {
+  return (
+    dogX < houseX + houseWidth &&
+    dogX + dogWidth > houseX &&
+    dogY < houseY + houseHeight &&
+    dogY + dogHeight > houseY
+  );
+}
+
 function showGameOver() {
   background(0);
   fill(255);
@@ -272,9 +299,16 @@ function showGameOver() {
 
 function showWin() {
   background(0);
-  fill(255);
+  fill('#00FF00');
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("You Win!", width / 2, height / 2);
-  noLoop();
+}
+
+function showLevelIntro() {
+  background(0, 200);
+  fill('#FFD700');
+  textAlign(CENTER, CENTER);
+  textSize(height * 0.1);
+  text(`Level ${level}`, width / 2, height / 2);
 }
