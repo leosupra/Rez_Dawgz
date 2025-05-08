@@ -294,8 +294,21 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("Game Over", width / 2, height / 2);
-  noLoop();
+  setTimeout(() => {
+    resetToStartScreen();
+  }, 3000);
 }
+
+function resetToStartScreen() {
+  gameStarted = false;
+  gameOver = false;
+  showingWin = false;
+  levelIntro = true;
+  level = 1;
+  noLoop();
+  drawStartScreen();
+}
+
 
 function showWin() {
   background(0);
