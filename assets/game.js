@@ -124,7 +124,7 @@ function draw() {
     strokeWeight(3);
     textAlign(CENTER, CENTER);
     textSize(32);
-    text("Press SPACE to Start", width / 2, height * 0.965); 
+    text("Press SPACE to Start", width / 2, height * 0.96); 
 
     return;
   }
