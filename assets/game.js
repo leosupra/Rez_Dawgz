@@ -298,6 +298,7 @@ function showGameOver() {
     levelIntro  = true;
     level       = 1;
   }, 2000);
+  return
 }
 
 function showWin() {
