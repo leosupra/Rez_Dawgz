@@ -1,3 +1,5 @@
+let startScreen;
+let gameStarted = false;
 let dog, doghouse, bg;
 let cars = [];
 let dogX, dogY, dogWidth, dogHeight, dogSpeed;
@@ -24,7 +26,8 @@ const frameDelay = 10;
 let currentDirection = null; 
 
 function preload() {
-  doghouse = loadImage('assets/house.png');
+  startScreen = loadImage('path/to/your/start-image.png')
+  doghouse = loadImage('assets/poster.jpg');
   bg = loadImage('assets/background.jpg');
 
   dogFrames.UP[0] = loadImage('assets/up1.png');
@@ -105,6 +108,17 @@ function setup() {
 
 
 function draw() {
+  if (!gameStarted) {
+    imageMode(CORNER); // top-left is origin
+    image(startScreen, 0, 0, width, height); 
+
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    text("Press SPACE to Start", width / 2, height * 0.9); 
+
+    return;
+  }
   if (gameOver) {
     showGameOver();
     return;
@@ -209,6 +223,11 @@ function handleInput() {
 }
 
 function keyPressed() {
+  if (!gameStarted && key === ' ') {
+    gameStarted = true;
+    loop();
+    return;
+  }
   if (!currentDirection) {
     if (keyIsDown(UP_ARROW)) currentDirection = 'UP';
     else if (keyIsDown(DOWN_ARROW)) currentDirection = 'DOWN';
