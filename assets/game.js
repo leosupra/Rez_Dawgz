@@ -58,17 +58,15 @@ function centerCanvas() {
 
 function respawnCar(car, lane) {
   const maxMultiplier = 4;
-  const gap = random(carHeight, carHeight * maxMultiplier) * car.speedFactor;
+  const gap = random(carHeight * 0.5, carHeight * maxMultiplier) * car.speedFactor;
   const isMovingDown = car.speed > 0;
 
   let referenceY;
 
   if (isMovingDown) {
-    // Find the car with the smallest Y (back of the pack moving down)
     referenceY = Math.min(...lane.cars.map(c => c.y));
     car.y = referenceY - carHeight - gap;
   } else {
-    // Find the car with the largest Y (back of the pack moving up)
     referenceY = Math.max(...lane.cars.map(c => c.y));
     car.y = referenceY + carHeight + gap;
   }
@@ -106,7 +104,7 @@ function draw() {
   if (levelIntro) {
     updateCarsOnly();
     showLevelIntro();
-    if (millis() - levelStartTime > 4000) {
+    if (millis() - levelStartTime > 3000) {
       levelIntro = false;
     }
     return;
@@ -265,7 +263,7 @@ function startLevel() {
     }
     lanes.push({ cars: carsInLane });
   }
-  const introMs = 4000;
+  const introMs = 3000;
   const fps     = frameRate() > 0 ? frameRate() : 60;
   const steps   = Math.ceil((introMs/1000) * fps);
   for (let i = 0; i < steps; i++) {
@@ -298,7 +296,7 @@ function showGameOver() {
     levelIntro  = true;
     level       = 1;
   }, 2000);
-  return
+  drawStartScreen();
 }
 
 function showWin() {
