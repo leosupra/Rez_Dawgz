@@ -297,7 +297,6 @@ function showGameOver() {
     showingWin  = false;
     levelIntro  = true;
     level       = 1;
-    noLoop();
   }, 2000);
 }
 
