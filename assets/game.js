@@ -112,14 +112,14 @@ function draw() {
     imageMode(CORNER); // top-left is origin
     image(startScreen, 0, 0, width, height);
 
-    fill(255);
+    fill('#FFD700');
     stroke(0);
     strokeWeight(4);
     textAlign(CENTER, CENTER);
     textSize(64);
     text("The Hard Way", width / 2, height * 0.1); 
 
-    fill('#D60000');
+    fill(255);
     stroke(0);
     strokeWeight(3);
     textAlign(CENTER, CENTER);
