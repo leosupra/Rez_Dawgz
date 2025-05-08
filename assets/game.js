@@ -86,7 +86,7 @@ function draw() {
 
   if (levelIntro) {
     showLevelIntro();
-    if (millis() - levelStartTime > 4000) {
+    if (millis() - levelStartTime > 2500) {
       levelIntro = false;
     }
     return;
