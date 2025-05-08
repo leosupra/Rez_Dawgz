@@ -60,18 +60,17 @@ function centerCanvas() {
   canvas.position(x, y);
 }
 
-// ——— New helper: move cars without drawing ———
 function updateCarsOnly() {
   for (let lane of lanes) {
     for (let car of lane.cars) {
       car.y += car.speed;
       if (car.speed > 0 && car.y > height) {
-        const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+        const gap = random(carHeight, carHeight * 3) * car.speedFactor;
         car.y = lane.lastRespawnY - gap;
         lane.lastRespawnY = car.y;
       } 
       else if (car.speed < 0 && car.y < -carHeight) {
-        const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+        const gap = random(carHeight, carHeight * 3) * car.speedFactor;
         car.y = lane.lastRespawnY + gap;
         lane.lastRespawnY = car.y;
       }
@@ -80,19 +79,16 @@ function updateCarsOnly() {
 }
 
 function draw() {
-  // 1) Start screen
   if (!gameStarted) {
     drawStartScreen();
     return;
   }
 
-  // 2) Game Over
   if (gameOver) {
     showGameOver();
     return;
   }
 
-  // 3) Win screen (no cars drawn behind it)
   if (showingWin) {
     showWin();
     if (millis() - winDisplayStart > 3000) {
@@ -103,7 +99,6 @@ function draw() {
     return;
   }
 
-  // 4) Level Intro: only move cars, draw the intro overlay
   if (levelIntro) {
     updateCarsOnly();
     showLevelIntro();
@@ -113,7 +108,6 @@ function draw() {
     return;
   }
 
-  // 5) After intro: full gameplay (update & draw)
   drawGamePlay();
 }
 
@@ -151,7 +145,6 @@ function drawGamePlay() {
 
   for (let lane of lanes) {
     for (let car of lane.cars) {
-      // move & wrap
       car.y += car.speed;
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight - random(carHeight, carHeight * 3) * car.speedFactor;
@@ -159,7 +152,6 @@ function drawGamePlay() {
         car.y = height + random(carHeight, carHeight * 3) * car.speedFactor;
       }
 
-      // draw
       push();
       if (car.dir) {
         translate(car.x + carWidth/2, car.y + carHeight/2);
@@ -172,7 +164,6 @@ function drawGamePlay() {
       }
       pop();
 
-      // collision
       const padding = dogHeight * 0.1;
       if (
         dogX + padding < car.x + carWidth - padding &&
@@ -245,7 +236,7 @@ function keyReleased() {
 }
 
 function startLevel() {
-  // dog & house
+  
   dogHeight = height * 0.15;
   dogWidth  = (257 / 463) * dogHeight;
   dogSpeed  = height * 0.0033;
@@ -257,7 +248,6 @@ function startLevel() {
   houseX      = width*0.997 - houseWidth;
   houseY      = random(0, height - houseHeight);
 
-  // lanes & cars
   const lanesCount  = lanePercents.length;
   const speedFactor = Math.pow(1.1, level - 1);
   carHeight = height * 0.18;
@@ -292,7 +282,6 @@ function startLevel() {
     lanes.push({ cars: carsInLane, lastRespawnY: lastY });
   }
 
-  // pre‐spread cars by simulating a full intro’s worth of moves
   const introMs = 4000;
   const fps     = frameRate() > 0 ? frameRate() : 60;
   const steps   = Math.ceil((introMs/1000) * fps);
