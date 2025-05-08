@@ -140,10 +140,11 @@ function drawGamePlay() {
     for (let car of lane.cars) {
       car.y += car.speed;
 
+      // Speed-scaled car reset with proper gap calculation
       if (car.speed > 0 && car.y > height) {
-        car.y = -carHeight - random(carHeight, carHeight * 2); 
+        car.y = -carHeight - random(carHeight, carHeight * 3) * car.speedFactor;
       } else if (car.speed < 0 && car.y < -carHeight) {
-        car.y = height + random(carHeight, carHeight * 2); 
+        car.y = height + random(carHeight, carHeight * 3) * car.speedFactor;
       }
 
       push();
@@ -255,8 +256,8 @@ function startLevel() {
     const speedFactor = Math.pow(1.1, level - 1);
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight * speedFactor, carHeight * 2 * speedFactor) 
-                    : height + random(carHeight * speedFactor, carHeight * 2 * speedFactor);
+    let currentY = goingDown ? -random(carHeight * 2, carHeight * 4) * speedFactor 
+                    : height + random(carHeight * 2, carHeight * 4) * speedFactor;
     let maxCars = 20;
 
     while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
@@ -265,10 +266,11 @@ function startLevel() {
         y: currentY,
         speed: baseSpeed,
         img: random(cars),
-        dir: goingDown
+        dir: goingDown,
+        speedFactor: speedFactor // Store speed factor with each car
       });
 
-      const gap = random(carHeight * speedFactor, carHeight * 2 * speedFactor);
+      const gap = random(carHeight * 2, carHeight * 4) * speedFactor;
       currentY += goingDown ? gap : -gap;
       if (--maxCars <= 0) break;
     }
