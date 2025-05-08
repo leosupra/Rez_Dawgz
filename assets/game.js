@@ -8,7 +8,7 @@ let gameOver = false;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
-let carHeight; 
+let carHeight;
 
 let level = 1;
 let levelIntro = true;
@@ -140,7 +140,6 @@ function drawGamePlay() {
     for (let car of lane.cars) {
       car.y += car.speed;
 
-      // Reset cars with speed-scaled gaps
       if (car.speed > 0 && car.y > height) {
         car.y = -carHeight - random(carHeight, carHeight * 2); 
       } else if (car.speed < 0 && car.y < -carHeight) {
@@ -203,17 +202,15 @@ function handleInput() {
 }
 
 function keyPressed() {
-  if (key === ' ') {
-    if (gameOver || !gameStarted) {
-      gameStarted = true;
-      gameOver = false;
-      showingWin = false;
-      level = 1;
-      lanes = [];
-      startLevel();
-      loop();
-      return;
-    }
+  if (key === ' ' && !gameStarted) {
+    gameStarted = true;
+    gameOver = false;
+    showingWin = false;
+    level = 1;
+    lanes = [];
+    startLevel();
+    loop();
+    return;
   }
   
   if (!currentDirection) {
@@ -234,21 +231,18 @@ function keyReleased() {
 }
 
 function startLevel() {
-  
   dogHeight = height * 0.15;
   dogWidth = (257 / 463) * dogHeight;
   dogSpeed = height * 0.0033;
   dogX = 20;
   dogY = height / 2 - dogHeight / 2;
 
-  
   houseWidth = height * 0.16;
   houseHeight = houseWidth * (381 / 500);
   houseX = width * 0.997 - houseWidth;
   houseY = random(0, height - houseHeight);
 
-  
-  carHeight = height * 0.18; 
+  carHeight = height * 0.18;
   const lanesCount = 6;
   lanes = [];
 
@@ -302,9 +296,15 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.1);
   text("Game Over", width / 2, height / 2);
-  fill('#FFD700');
-  textSize(32);
-  text("Press SPACE to Restart", width / 2, height * 0.7);
+  
+  setTimeout(() => {
+    gameStarted = false;
+    gameOver = false;
+    showingWin = false;
+    levelIntro = true;
+    level = 1;
+    noLoop();
+  }, 2000);
 }
 
 function showWin() {
