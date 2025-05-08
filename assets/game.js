@@ -112,13 +112,14 @@ function draw() {
     imageMode(CORNER); // top-left is origin
     image(startScreen, 0, 0, width, height);
 
-    fill('#FF0033');
-    stroke(255);
+    fill('#B22222');
+    stroke(0);
     textAlign(CENTER, CENTER);
     textSize(64);
     text("The Hard Way", width / 2, height * 0.1); 
 
     fill(255);
+    stroke(0);
     textAlign(CENTER, CENTER);
     textSize(32);
     text("Press SPACE to Start", width / 2, height * 0.965); 
