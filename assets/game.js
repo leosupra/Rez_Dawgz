@@ -86,7 +86,7 @@ function draw() {
 
   if (levelIntro) {
     showLevelIntro();
-    if (millis() - levelStartTime > 2500) {
+    if (millis() - levelStartTime > 4000) {
       levelIntro = false;
     }
     return;
@@ -142,11 +142,9 @@ function drawGamePlay() {
       car.y += car.speed;
 
       if (car.speed > 0 && car.y > height) {
-        const minY = Math.min(...lane.cars.map(c => c.y));
-        car.y = minY - random(carHeight, carHeight * 4);
+        car.y = -carHeight - random(carHeight, carHeight * 3); 
       } else if (car.speed < 0 && car.y < -carHeight) {
-        const maxY = Math.max(...lane.cars.map(c => c.y));
-        car.y = maxY + random(carHeight, carHeight * 4);
+        car.y = height + random(carHeight, carHeight * 3); 
       }
 
       push();
@@ -207,11 +205,13 @@ function handleInput() {
 function keyPressed() {
   if (!gameStarted && key === ' ') {
     gameStarted = true;
-    startLevel();
-    loop();
+    gameOver = false;
+    gameWon = false;
+    level = 1;
+    startLevel(); 
+    loop();       
     return;
   }
-
   if (!currentDirection) {
     if (keyIsDown(UP_ARROW)) currentDirection = 'UP';
     else if (keyIsDown(DOWN_ARROW)) currentDirection = 'DOWN';
