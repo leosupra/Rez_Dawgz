@@ -120,58 +120,7 @@ function drawStartScreen() {
   text("Developed by LEO", width * 0.99, height * 0.98);
 }
 
-function drawGamePlay() {
-  background(bg);
-  const carWidth = carHeight * (370 / 800);
 
-  drawDog();
-  updateAnimation();
-  handleInput();
-
-  image(doghouse, houseX, houseY, houseWidth, houseHeight);
-
-  if (dogReachedHouse()) {
-    showingWin = true;
-    winDisplayStart = millis();
-    return;
-  }
-
-  for (let lane of lanes) {
-    for (let car of lane.cars) {
-      car.y += car.speed;
-
-      // Speed-scaled car reset with proper gap calculation
-      if (car.speed > 0 && car.y > height) {
-        car.y = -carHeight - random(carHeight, carHeight * 3) * car.speedFactor;
-      } else if (car.speed < 0 && car.y < -carHeight) {
-        car.y = height + random(carHeight, carHeight * 3) * car.speedFactor;
-      }
-
-      push();
-      if (car.dir) {
-        translate(car.x + carWidth / 2, car.y + carHeight / 2);
-        rotate(PI);
-        imageMode(CENTER);
-        image(car.img, 0, 0, carWidth, carHeight);
-      } else {
-        imageMode(CORNER);
-        image(car.img, car.x, car.y, carWidth, carHeight);
-      }
-      pop();
-
-      const padding = dogHeight * 0.1;
-      if (
-        dogX + padding < car.x + carWidth - padding &&
-        dogX + dogWidth - padding > car.x + padding &&
-        dogY + padding < car.y + carHeight - padding &&
-        dogY + dogHeight - padding > car.y + padding
-      ) {
-        gameOver = true;
-        return;
-      }
-    }
-  }
-}
 
 function drawDog() {
   if (!currentDirection) {
@@ -244,44 +193,100 @@ function startLevel() {
   houseY = random(0, height - houseHeight);
 
   carHeight = height * 0.18;
-  const lanesCount = 6;
+  const lanesCount = lanePercents.length;
   lanes = [];
+
+  const speedFactor = Math.pow(1.1, level - 1);
 
   for (let i = 0; i < lanesCount; i++) {
     const laneX = lanePercents[i] * width;
     const goingDown = i % 2 === 0;
-    let baseSpeed = height * 0.003 * Math.pow(1.1, level - 1);
+    let baseSpeed = height * 0.003 * speedFactor;
     if ([1, 2, 4, 5].includes(i)) baseSpeed *= 1.3;
     baseSpeed *= goingDown ? 1 : -1;
-    const speedFactor = Math.pow(1.1, level - 1);
 
     let carsInLane = [];
-    let currentY = goingDown ? -random(carHeight * 2, carHeight * 4) * speedFactor 
-                    : height + random(carHeight * 2, carHeight * 4) * speedFactor;
-    let maxCars = 20;
+    let currentY = goingDown
+      ? -random(carHeight * 2, carHeight * 4) * speedFactor
+      : height + random(carHeight * 2, carHeight * 4) * speedFactor;
 
-    while ((goingDown && currentY < height * 2) || (!goingDown && currentY > -height)) {
+    for (let c = 0; c < 20; c++) {
       carsInLane.push({
         x: laneX,
         y: currentY,
         speed: baseSpeed,
         img: random(cars),
         dir: goingDown,
-        speedFactor: speedFactor // Store speed factor with each car
+        speedFactor: speedFactor
       });
-
       const gap = random(carHeight * 2, carHeight * 4) * speedFactor;
       currentY += goingDown ? gap : -gap;
-      if (--maxCars <= 0) break;
     }
 
-    lanes.push({ cars: carsInLane });
+    const lastY = carsInLane[carsInLane.length - 1].y;
+    lanes.push({ cars: carsInLane, lastRespawnY: lastY });
   }
 
   levelIntro = true;
   levelStartTime = millis();
   loop();
 }
+
+function drawGamePlay() {
+  background(bg);
+  const carWidth = carHeight * (370 / 800);
+
+  drawDog();
+  updateAnimation();
+  handleInput();
+  image(doghouse, houseX, houseY, houseWidth, houseHeight);
+
+  if (dogReachedHouse()) {
+    showingWin = true;
+    winDisplayStart = millis();
+    return;
+  }
+
+  for (let lane of lanes) {
+    for (let car of lane.cars) {
+      car.y += car.speed;
+
+      if (car.speed > 0 && car.y > height) {
+        const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+        car.y = lane.lastRespawnY - gap;
+        lane.lastRespawnY = car.y;
+      } else if (car.speed < 0 && car.y < -carHeight) {
+        const gap = random(carHeight, carHeight * 4) * car.speedFactor;
+        car.y = lane.lastRespawnY + gap;
+        lane.lastRespawnY = car.y;
+      }
+
+      push();
+      if (car.dir) {
+        translate(car.x + carWidth / 2, car.y + carHeight / 2);
+        rotate(PI);
+        imageMode(CENTER);
+        image(car.img, 0, 0, carWidth, carHeight);
+      } else {
+        imageMode(CORNER);
+        image(car.img, car.x, car.y, carWidth, carHeight);
+      }
+      pop();
+
+      const padding = dogHeight * 0.1;
+      if (
+        dogX + padding < car.x + carWidth - padding &&
+        dogX + dogWidth - padding > car.x + padding &&
+        dogY + padding < car.y + carHeight - padding &&
+        dogY + dogHeight - padding > car.y + padding
+      ) {
+        gameOver = true;
+        return;
+      }
+    }
+  }
+}
+
 
 function dogReachedHouse() {
   return (
