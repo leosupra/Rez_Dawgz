@@ -26,8 +26,8 @@ const frameDelay = 10;
 let currentDirection = null; 
 
 function preload() {
-  startScreen = loadImage('path/to/your/start-image.png')
-  doghouse = loadImage('assets/poster.jpg');
+  startScreen = loadImage('assets/poster.jpg')
+  doghouse = loadImage('assets/house.png');
   bg = loadImage('assets/background.jpg');
 
   dogFrames.UP[0] = loadImage('assets/up1.png');
