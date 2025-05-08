@@ -296,7 +296,6 @@ function showGameOver() {
     levelIntro  = true;
     level       = 1;
   }, 2000);
-  drawStartScreen();
 }
 
 function showWin() {
