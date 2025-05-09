@@ -5,7 +5,7 @@ let cars = [];
 let dogX, dogY, dogWidth, dogHeight, dogSpeed;
 let houseX, houseY, houseWidth, houseHeight;
 let gameOver = false;
-let gameOverScreen;
+let gameOverScreen, completed;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
@@ -25,6 +25,7 @@ let currentDirection = null;
 
 function preload() {
   startScreen = loadImage('assets/poster.jpg');
+  completed =  loadImage('assets/completed.jpg');
   gameOverScreen = loadImage('assets/gameover.jpg');
   doghouse    = loadImage('assets/house.png');
   bg          = loadImage('assets/background.jpg');
@@ -313,11 +314,12 @@ function showGameOver() {
 
 
 function showWin() {
-  background(0);
-  fill('#00FF00');
+  imageMode(CORNER);
+  image(completed, 0, 0, width, height);
+  fill('#00E676');
   textAlign(CENTER, CENTER);
-  textSize(height * 0.1);
-  text("You Win!", width/2, height/2);
+  textSize(48)
+  text("Level Completed !", width/2, height * 0.1);
 }
 
 function showLevelIntro() {
