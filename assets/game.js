@@ -305,8 +305,7 @@ function showGameOver() {
   textAlign(CENTER, CENTER);
   textSize(48);
   text(`Game Over ! You reached Level ${level}`, width / 2, height * 0.1);
-
-
+  fill(255)
   textSize(24);
   text("Press ENTER to return to Main Menu", width / 2, height * 0.95);
 }
