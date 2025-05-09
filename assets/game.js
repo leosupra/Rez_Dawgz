@@ -301,11 +301,9 @@ function showGameOver() {
   imageMode(CORNER);
   image(gameOverScreen, 0, 0, width, height); 
 
-  fill(255);
-  stroke(0);
-  strokeWeight(5);
+  fill('#FF3B3B');
   textAlign(CENTER, CENTER);
-  textSize(64);
+  textSize(48);
   text(`Game Over ! You reached Level ${level}`, width / 2, height * 0.1);
 
 
