@@ -316,7 +316,7 @@ function showGameOver() {
 function showWin() {
   imageMode(CORNER);
   image(completed, 0, 0, width, height);
-  fill('#00E676');
+  fill('#43A047');
   textAlign(CENTER, CENTER);
   textSize(48)
   text("Level Completed !", width/2, height * 0.1);
