@@ -5,12 +5,11 @@ let cars = [];
 let dogX, dogY, dogWidth, dogHeight, dogSpeed;
 let houseX, houseY, houseWidth, houseHeight;
 let gameOver = false;
+let gameOverScreen;
 let canvas;
 let lanes = [];
 let lanePercents = [0.137, 0.327, 0.416, 0.578, 0.737, 0.825];
 let carHeight;
-let gameOverStartTime = 0;
-
 
 let level = 1;
 let levelIntro = true;
@@ -26,6 +25,7 @@ let currentDirection = null;
 
 function preload() {
   startScreen = loadImage('assets/poster.jpg');
+  gameOverScreen = loadImage('assets/gameover.jpg');
   doghouse    = loadImage('assets/house.png');
   bg          = loadImage('assets/background.jpg');
 
@@ -165,7 +165,6 @@ function drawGamePlay() {
         dogY + dogHeight - pad > car.y + pad
       ) {
         gameOver = true;
-        gameOverStartTime = millis();
       }
     }
   }
@@ -200,7 +199,8 @@ function handleInput() {
 }
 
 function keyPressed() {
-  if (key === ' ' && !gameStarted) {
+
+  if (key === ' ' && !gameStarted && !gameOver) {
     gameStarted = true;
     gameOver    = false;
     showingWin  = false;
@@ -210,13 +210,25 @@ function keyPressed() {
     loop();
     return;
   }
+
+  if (gameOver && keyCode === ENTER) {
+    gameStarted = false;
+    gameOver    = false;
+    showingWin  = false;
+    levelIntro  = true;
+    level       = 1;
+    noLoop(); 
+    return;
+  }
+
   if (!currentDirection) {
-    if (keyIsDown(UP_ARROW))     currentDirection = 'UP';
+    if (keyIsDown(UP_ARROW))       currentDirection = 'UP';
     else if (keyIsDown(DOWN_ARROW))currentDirection = 'DOWN';
     else if (keyIsDown(LEFT_ARROW))currentDirection = 'LEFT';
     else if (keyIsDown(RIGHT_ARROW))currentDirection = 'RIGHT';
   }
 }
+
 
 function keyReleased() {
   if ((keyCode === UP_ARROW    && currentDirection === 'UP')    ||
@@ -286,20 +298,21 @@ function dogReachedHouse() {
 }
 
 function showGameOver() {
-  background(0);
-  fill(255);
-  textAlign(CENTER, CENTER);
-  textSize(height * 0.1);
-  text("Game Over", width/2, height/2);
+  imageMode(CORNER);
+  image(gameOverScreen, 0, 0, width, height); 
 
-  if (millis() - gameOverStartTime > 2000) {
-    gameStarted = false;
-    gameOver    = false;
-    showingWin  = false;
-    levelIntro  = true;
-    level       = 1;
-  }
+  fill(255);
+  stroke(0);
+  strokeWeight(5);
+  textAlign(CENTER, CENTER);
+  textSize(64);
+  text(`Game Over ! You reached Level ${level}`, width / 2, height * 0.1);
+
+
+  textSize(24);
+  text("Press ENTER to return to Main Menu", width / 2, height * 0.95);
 }
+
 
 
 function showWin() {
