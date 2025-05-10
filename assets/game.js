@@ -23,6 +23,8 @@ let frameTimer = 0;
 const frameDelay = 10;
 let currentDirection = null;
 
+let bgm, win, crush
+
 function preload() {
   startScreen = loadImage('assets/poster.jpg');
   completed =  loadImage('assets/completed.jpg');
@@ -43,6 +45,9 @@ function preload() {
   for (let i = 1; i <= 4; i++) {
     cars.push(loadImage(`assets/car${i}.jpg`));
   }
+  bgm = loadSound('assets/bgm.mp3');
+  win = loadSound('assets/win.mp3');
+  crush = loadSound('assets/crush.mp3');
 }
 
 function setup() {
@@ -137,6 +142,8 @@ function drawGamePlay() {
   handleInput();
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
   if (dogReachedHouse()) {
+    bgm.stop();
+    win.play()
     showingWin      = true;
     winDisplayStart = millis();
     return;
@@ -165,6 +172,8 @@ function drawGamePlay() {
         dogY + pad < car.y + carHeight - pad &&
         dogY + dogHeight - pad > car.y + pad
       ) {
+        bgm.stop();
+        crush.play()
         gameOver = true;
       }
     }
@@ -312,7 +321,6 @@ function showGameOver() {
 }
 
 
-
 function showWin() {
   imageMode(CORNER);
   image(completed, 0, 0, width, height);
@@ -328,4 +336,11 @@ function showLevelIntro() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.08);
   text(`Level ${level}`, width/2, height/2);
+  bgm.setLoop(true);
+  bgm.play();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();
 }
