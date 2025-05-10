@@ -47,9 +47,9 @@ function preload() {
   for (let i = 1; i <= 4; i++) {
     cars.push(loadImage(`assets/car${i}.chd`));
   }
-  bgm = loadSound('assets/bgm.mp3');
-  win = loadSound('assets/win.mp3');
-  crush = loadSound('assets/crush.mp3');
+  bgm = loadSound('assets/bgm.chd');
+  win = loadSound('assets/win.chd');
+  crush = loadSound('assets/crush.chd');
 }
 
 function setup() {
