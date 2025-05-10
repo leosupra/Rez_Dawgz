@@ -67,8 +67,8 @@ function centerCanvas() {
 }
 
 function respawnCar(car, lane) {
-  const maxMultiplier = 2;
-  const gap = random(carHeight * 0.5, carHeight * maxMultiplier) * car.speedFactor;
+  const maxMultiplier = 2.5;
+  const gap = random(carHeight * 0.25, carHeight * maxMultiplier) * car.speedFactor;
   const isMovingDown = car.speed > 0;
 
   let referenceY;
@@ -275,8 +275,8 @@ function startLevel() {
     baseSpeed *= goingDown ? 1 : -1;
     let carsInLane = [];
     let currentY   = goingDown
-                   ? -random(carHeight*0.5, carHeight*2)*speedFactor
-                   :  height+random(carHeight*0.5, carHeight*2)*speedFactor;
+                   ? -random(carHeight*0.25, carHeight*2.5)*speedFactor
+                   :  height+random(carHeight*0.25, carHeight*2.5)*speedFactor;
     for (let c = 0; c < 20; c++) {
       carsInLane.push({
         x: laneX,
@@ -286,7 +286,7 @@ function startLevel() {
         dir: goingDown,
         speedFactor
       });
-      const gap = random(carHeight*0.5, carHeight*2)*speedFactor;
+      const gap = random(carHeight*0.25, carHeight*2.5)*speedFactor;
       currentY += goingDown ? gap : -gap;
     }
     lanes.push({ cars: carsInLane });
