@@ -291,16 +291,12 @@ function startLevel() {
     }
     lanes.push({ cars: carsInLane });
   }
-  const introMs = 3000;
-  const fps     = frameRate() > 0 ? frameRate() : 60;
-  const steps   = Math.ceil((introMs/1000) * fps);
-  for (let i = 0; i < steps; i++) {
-    updateCarsOnly();
-  }
+  // Removed the blocking loop here
   levelIntro     = true;
   levelStartTime = millis();
   loop();
 }
+
 
 function dogReachedHouse() {
   return (
