@@ -214,16 +214,16 @@ function handleInput() {
 
 function keyPressed() {
 
-  if (key === ' ' && !gameStarted && !gameOver) {
-    gameStarted = true;
-    gameOver    = false;
-    showingWin  = false;
-    level       = 1;
-    lanes       = [];
-    startLevel();
-    loop();
-    return;
-  }
+  if (keyCode === 32 && !gameStarted && !gameOver) {
+  gameStarted = true;
+  gameOver    = false;
+  showingWin  = false;
+  level       = 1;
+  lanes       = [];
+  startLevel();
+  loop();
+  return;
+}
 
   if (gameOver && keyCode === ENTER) {
     gameStarted = false;
