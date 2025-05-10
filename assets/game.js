@@ -25,6 +25,8 @@ let currentDirection = null;
 
 let bgm, win, crush
 
+let musicStarted = false;
+
 function preload() {
   startScreen = loadImage('assets/poster.jpg');
   completed =  loadImage('assets/completed.jpg');
@@ -143,6 +145,7 @@ function drawGamePlay() {
   image(doghouse, houseX, houseY, houseWidth, houseHeight);
   if (dogReachedHouse()) {
     bgm.stop();
+    musicStarted = false;
     win.play()
     showingWin      = true;
     winDisplayStart = millis();
@@ -173,6 +176,7 @@ function drawGamePlay() {
         dogY + dogHeight - pad > car.y + pad
       ) {
         bgm.stop();
+        musicStarted = false;
         crush.play()
         gameOver = true;
       }
@@ -336,9 +340,14 @@ function showLevelIntro() {
   textAlign(CENTER, CENTER);
   textSize(height * 0.08);
   text(`Level ${level}`, width/2, height/2);
-  bgm.setLoop(true);
-  bgm.play();
+
+  if (!musicStarted) {
+    bgm.setLoop(true);
+    bgm.play();
+    musicStarted = true;
+  }
 }
+
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
