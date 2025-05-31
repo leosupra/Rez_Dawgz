@@ -64,6 +64,7 @@ function setup() {
   centerCanvas();
   textFont('Arial Black');
   textSize(24);
+  noSmooth();
   noLoop();
 }
 
