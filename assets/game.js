@@ -26,7 +26,7 @@ let currentDirection = null;
 let collectibles = [];
 let coinImg, bowlImg;
 let score = { coins: 0, bowls: 0 };
-const collectibleSize = 48;
+const collectibleSize = 40;
 
 let bgm, win, crush
 let musicStarted = false;
@@ -64,7 +64,6 @@ function setup() {
   centerCanvas();
   textFont('Arial Black');
   textSize(24);
-  noSmooth();
   noLoop();
 }
 
