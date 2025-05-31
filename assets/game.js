@@ -26,7 +26,7 @@ let currentDirection = null;
 let collectibles = [];
 let coinImg, bowlImg;
 let score = { coins: 0, bowls: 0 };
-const collectibleSize = 64;
+const collectibleSize = 48;
 
 let bgm, win, crush
 let musicStarted = false;
